@@ -6,7 +6,6 @@
 
 %initialize image
 img = zeros(620, 362, 3);
-prg = progress();
 % Number of samples per pixel
 spp = 8;
 
@@ -18,9 +17,6 @@ for i = 1:spp:N
     g = mean(bin_import(8,i:i+spp-1));
     b = mean(bin_import(9,i:i+spp-1));
     img(y+1, x+1, :) = [r g b];
-    if mod(i, 80) == 0
-        progress(prg, i/(N-8));
-    end
 end
 
 imtool(img)
