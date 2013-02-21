@@ -5,7 +5,8 @@ function n = preprocess_samples(k, boxsize, max_samples_box, spp)
     end
     mean_position = [floor(mean(bin_import(1,k:k+spp-1))), floor(mean(bin_import(2,k:k+spp-1)))];
     standard_deviation = boxsize/4;
-    N = k; 
+    % add all samples of current pixel
+    N = k:k+7; 
     % Normal of first intersection
     % NOT THERE World-Space position of first intersection
     % primary albedo (texture value of first intersection)
@@ -24,11 +25,11 @@ function n = preprocess_samples(k, boxsize, max_samples_box, spp)
         j = getIndexByPosition(sample_pos);
         sample_number = randi([0, 7]); %TODO: make sure a sample isn't chosen twice
         flag = 1;
-        for f = [features 
-                1:length(features)]
-            feature_value = getFeatureForIndex(f(1), j + sample_number);
-            if any(abs(feature_value - means(f(2))) < 3*variances(f(2))) ...
-                    & (abs(feature_value - means(f(2)) > 0.1 | variances(f(2)) > 0.1))              
+        for f_nr = 1:length(features)
+            feature_value = getFeatureForIndex(features(f_nr), j + sample_number);
+            larger_than_variance = abs(feature_value - current_pixel_feature_value(f_nr, means)) > 3*current_pixel_feature_value(f_nr, variances);
+            variance_is_significant = abs(feature_value - current_pixel_feature_value(f_nr, means)) > 0.1 | current_pixel_feature_value(f_nr, variances) > 0.1;
+            if any(larger_than_variance & variance_is_significant)             
                 flag = 0;
                 break;
             end
@@ -40,4 +41,8 @@ function n = preprocess_samples(k, boxsize, max_samples_box, spp)
     end
     n = N;
     %Neighbourhood ready for statistical analysis
+end
+
+function f_mean = current_pixel_feature_value(f_nr, type)
+    f_mean = type(f_nr:(f_nr+2));
 end
