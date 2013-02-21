@@ -17,14 +17,18 @@ function n = preprocess_samples(k, boxsize, max_samples_box, spp)
     
     for q = 1:(max_samples_box - spp)
         sample_pos = normrnd(mean_position, standard_deviation);
+        % skip if out of range
+        if (any(sample_pos < [1,1] | sample_pos > [620, 362]))
+            continue;
+        end
         j = getIndexByPosition(sample_pos);
         sample_number = randi([0, 7]); %TODO: make sure a sample isn't chosen twice
         flag = 1;
         for f = [features 
                 1:length(features)]
             feature_value = getFeatureForIndex(f(1), j + sample_number);
-            % TODO: loop over multiple features?
-            if (abs(feature_value - means(f(2))) < 3*variances(f(2))) && (abs(feature_value - means(f(2)) > 0.1 | variances(f(2)) > 0.1))                
+            if any(abs(feature_value - means(f(2))) < 3*variances(f(2))) ...
+                    & (abs(feature_value - means(f(2)) > 0.1 | variances(f(2)) > 0.1))              
                 flag = 0;
                 break;
             end
