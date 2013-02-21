@@ -19,3 +19,6 @@ fclose(fid);
 % 9: blue
 % 10, 11, 12: primary motion vector (when primary ray hit surface)
 % 13, 14, 15: primary normal (when primary ray hit surface)
+% 16, 17, 18: primary albedo (texture value of first intersection)
+% 28, 29, 30: secondary normal
+% 34, 35, 36: secondary albedo (texture value second intersection)

@@ -6,3 +6,84 @@ CoC coefficients (coc radius = C0/w+C1): -0.000000,0.000000
 Pixel-to-camera matrix: 0.004132,0.000000,0.000000,-0.750000,0.000000,-0.004132,0.000000,1.652893,0.000000,0.000000,0.000000,1.000000,0.000000,0.000000,-99.999001,100.000000
 Encoding = binary
 x,y,w,u,v,t,r,g,b,pri_mv(3d),pri_normal(3d),albedo(3d),sec_origin(3d),sec_hitpoint(3d),sec_mv(3d),sec_normal(3d),direct(3d),sec_albedo(3d),sec_direct(3d)
+
+Width and Height specify the dimensions of the image, in pixels. Samples 
+per pixel says how many samples to expect. The CoC coefficients give 
+formulas for computing the slope dx/du and dy/dv given the camera space 
+depth (z) for a sample (see below). Pixel-to-camera matrix is a 4x4 
+projection matrix that maps pixel coordinates to points on the camera's 
+focal plane (in camera space coordinates) as seen from the center of the 
+lens. This information is only utilized in the DoF/motion reconstruction 
+pipeline (see below, Figure 11 and Section 3.4). The last row serves as 
+a reminder on how to interpret the numbers in the actual sample file. 
+
+The actual sample data file can be either text or binary. We recommend 
+generating your sample buffers in text format and using the 
+functionality in UVTSampleBuffer to convert it to binary; this can be 
+done by loading in the text version and serializing back to disk with 
+the binary flag turned on. 
+
+In the main sample file, each line describes one sample as a sequence 
+
+x and y are the sample's pixel coordinates, including fractional 
+subpixel offsets. 
+
+w is the angular bandwidth estimate of the reflectance function at the 
+secondary hit (see Section 2.5). IMPORTANT NOTE: The unintuitive naming 
+(w) in and the location as the third parameter is due to historical 
+reasons. 
+
+u and v are the lens coordinates at which the sample was taken, in the 
+range [-1,1]. Not used except in DoF/motion reconstruction. 
+
+t is the time coordinate in the range [0,1] denoting the instant the 
+sample was taken. Not used except in DoF/motion reconstruction. 
+
+r,g,b is the sample's radiance, in linear RGB. Corresponds to $L$ in 
+Section 2.1. 
+
+pri_mv is the 3D camera-space motion vector for the surface hit by the 
+primary ray. CURRENTLY UNUSED. 
+
+pri_normal is the 3D camera-space normal for the primary hit.
+
+albedo is the albedo for the primary hit. This variable is only used for 
+diffuse reconstruction where we need to know the primary hit's 
+reflectance in order to generate the final shaded value (glossy rays are 
+handled separately as explained above). 
+
+sec_origin is the origin of the secondary ray, and corresponds to 
+$\mathbf{o}$ in Section 2.1. 
+
+sec_hitpoint is the hit point of the secondary ray, and corresponds to 
+$\mathbf{h}$ in Section 2.1.
+
+sec_mv is the 3D camera-space motion vector for the secondary hit. 
+CURRENTLY UNUSED except in the DoF/motion reconstruction, which abuses 
+this field for motion of the primary hit. 
+
+sec_normal is the 3D camera space normal of the secondary hit point.
+
+direct is the RGB radiance of the direct lighting estimate at the 
+primary hit. CURRENTLY UNUSED.
+
+sec_albedo and sec_direct are the path throughput and direct radiance at 
+the secondary hit, respectively. These are used only in the experimental 
+recursive filtering (Sec. 4) in the CUDA reconstruction pipeline. 
+Recursive filtering can be enabled by setting "gatherPasses" to a 
+positive number in ReconstructionIndirectCUDA.cpp. 
+
+The "CoC coefficients" C0,C1 are constants that are used for computing
+the circle of confusion for a given depth, assuming a thin lens
+model. The CoC corresponds directly to the slopes dx/du and dy/dv for
+a given depth w. This is how to compute C0 and C1, illustrated using
+PBRT's perspective camera API:
+
+	float f = 1.f / ( 1 + 1.f / pCamera->getFocalDistance() );
+	float sensorSize = 2 * tan( 0.5f * pCamera->getFoVRadians() );
+	float cocCoeff1 = pCamera->getLensRadius() * f / ( pCamera->getFocalDistance() - f );
+	cocCoeff1 *= min( camera->film->xResolution, camera->film->yResolution ) / sensorSize;
+	float cocCoeff0 = -cocCoeff1 * pCamera->getFocalDistance();
+
+If you use another model, you must derive the constants C0 and C1 yourself.
+	
