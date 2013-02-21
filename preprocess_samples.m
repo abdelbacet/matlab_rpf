@@ -10,10 +10,9 @@ function n = preprocess_samples(i, boxsize, max_samples_box, ssp)
     % NOT THERE World-Space position of second intersection
     % secondary normal
     % secondary albedo (texture value second intersection)
-    features = [13, 16, 28, 34]
-    mean_position = [floor(mean(bin_import(1,i:i+spp-1))), floor(mean(bin_import(2,i:i+spp-1)))];
-    mean_normal = getNormal(i);
-    var_normal = [var(bin_import(13,i:i+spp-1)), var(bin_import(14,i:i+spp-1)), var(bin_import(15,i:i+spp-1))];
+    features = [13, 16, 28, 34];    
+    
+    getFeatureMeanAndVariance(features, i)
     
     for q = 1:(max_samples_box - ssp)
         j = normrnd(mean_position, standard_deviation);
@@ -31,9 +30,4 @@ function n = preprocess_samples(i, boxsize, max_samples_box, ssp)
             end
     end
     end
-
-% Assumes that all features are vectors with 3 dimensions
-% f is the index that the first dimension is saved
-function normal = getFeature(f, i)
-    normal = [mean(bin_import(f,i:i+spp-1)), mean(bin_import(f + 1,i:i+spp-1)), mean(bin_import(f + 2,i:i+spp-1))];
 end
