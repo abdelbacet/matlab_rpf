@@ -12,15 +12,19 @@ function n = preprocess_samples(i, boxsize, max_samples_box, ssp)
     % secondary albedo (texture value second intersection)
     features = [13, 16, 28, 34];    
     
-    getFeatureMeanAndVariance(features, i)
+    [means, variances] = getFeatureMeanAndVariance(features, i);
     
     for q = 1:(max_samples_box - ssp)
-        j = normrnd(mean_position, standard_deviation);
+        sample_pos = normrnd(mean_position, standard_deviation);
+        j = getIndexByPosition(sample_pos);
+        sampleNumber = randi([0, 7]);
         flag = 1;
-        normal = getNormal(j);
-        for f = [
+        normal = 
+        for f = features
+            feature_value = getFeatureForIndex(f, j);
             % TODO: loop over multiple features?
-            if ( abs(normal - mean_normal) > duno?) % TODO
+            if ( abs(normal - ) > 3*variances[f]
+                && abs(normal - ) % TODO
                 flag = 0;
                 % break; %only needed if looping over several features
             end
