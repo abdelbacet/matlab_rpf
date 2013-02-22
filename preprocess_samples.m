@@ -41,6 +41,8 @@ function n = preprocess_samples(k, boxsize, max_samples_box, spp)
     end
     n = N;
     %Neighbourhood ready for statistical analysis
+    
+    % todo: normalize N, return it
 end
 
 function f_mean = current_pixel_feature_value(f_nr, type)

@@ -1,6 +1,8 @@
 fid = fopen('samplebuffer_sanmiguel_diffuse_8spp.bin');
 
-global bin_import
+global bin_import;
+global spp
+spp = 8;
 bin_import = fread (fid, [9+3*10, 362*620*8],'float');
 'finished reading'
 
