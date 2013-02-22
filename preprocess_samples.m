@@ -57,5 +57,10 @@ function neighbourhood = preprocess_samples(k, boxsize, max_samples_box, spp)
                     'pri_albedo', std([neighbourhood.pri_albedo], 0, 2), ...
                     'sec_normal', std([neighbourhood.sec_normal], 0, 2), ...
                     'sec_albedo', std([neighbourhood.sec_albedo], 0, 2));
-    % todo: normalize N, return it
+    for n = neighbourhood
+        n.normal = (n.normal - means_neighbourhood.normal) / std_neighbourhood.normal;
+        n.pri_albedo = (n.pri_albedo - means_neighbourhood.pri_albedo) / std_neighbourhood.pri_albedo;
+        n.sec_normal = (n.sec_normal - means_neighbourhood.sec_normal) / std_neighbourhood.sec_normal;
+        n.sec_albedo = (n.sec_albedo - means_neighbourhood.sec_albedo) / std_neighbourhood.sec_albedo;
+    end
 end
