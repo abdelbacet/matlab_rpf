@@ -17,16 +17,17 @@ function n = preprocess_samples(k, boxsize, max_samples_box, spp)
     [means, variances] = getFeatureMeanAndVariance(features, k);
     
     for q = 1:(max_samples_box - spp)
-        sample_pos = normrnd(mean_position, standard_deviation);
-        % skip if out of range
-        if (any(sample_pos < [1,1] | sample_pos > [620, 362]))
+        sample_pos = round(normrnd(mean_position, standard_deviation));
+        % skip if out of range or at initial position
+        if (any(sample_pos < [1,1] | sample_pos > [620, 362]) || all(sample_pos == mean_position))
             continue;
         end
         j = getIndexByPosition(sample_pos);
         sample_number = randi([0, 7]); %TODO: make sure a sample isn't chosen twice?
+        inspected_sample = j + sample_number;
         flag = 1;
         for f_nr = 1:length(features)
-            feature_value = getFeatureForIndex(features(f_nr), j + sample_number);
+            feature_value = getFeatureForIndex(features(f_nr), inspected_sample);
             larger_than_variance = abs(feature_value - means(:,f_nr)) > 3*variances(:,f_nr);
             variance_is_significant = abs(feature_value - means(:,f_nr)) > 0.1 | variances(:,f_nr) > 0.1;
             if any(larger_than_variance & variance_is_significant)             
@@ -36,7 +37,7 @@ function n = preprocess_samples(k, boxsize, max_samples_box, spp)
         end
         if flag == 1
             % append to neighbourhood
-            N = [N, k];
+            N = [N, inspected_sample];
         end
     end
     n = N;
