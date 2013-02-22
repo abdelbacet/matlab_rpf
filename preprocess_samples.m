@@ -1,4 +1,4 @@
-function n = preprocess_samples(k, boxsize, max_samples_box, spp)
+function neighbourhood = preprocess_samples(k, boxsize, max_samples_box, spp)
     global bin_import;
     if nargin < 4
         spp = 8;
@@ -14,8 +14,7 @@ function n = preprocess_samples(k, boxsize, max_samples_box, spp)
     % secondary normal
     % secondary albedo (texture value second intersection)
     features = [13, 16, 28, 34];
-    [means, variances] = getFeatureMeanAndVariance(features, k);
-    
+    [means, st_deviation] = getFeatureMeanAndStd(features, k);
     for q = 1:(max_samples_box - spp)
         sample_pos = round(normrnd(mean_position, standard_deviation));
         % skip if out of range or at initial position
@@ -28,20 +27,35 @@ function n = preprocess_samples(k, boxsize, max_samples_box, spp)
         flag = 1;
         for f_nr = 1:length(features)
             feature_value = getFeatureForIndex(features(f_nr), inspected_sample);
-            larger_than_variance = abs(feature_value - means(:,f_nr)) > 3*variances(:,f_nr);
-            variance_is_significant = abs(feature_value - means(:,f_nr)) > 0.1 | variances(:,f_nr) > 0.1;
+            larger_than_variance = abs(feature_value - means(:,f_nr)) > 3*st_deviation(:,f_nr);
+            variance_is_significant = abs(feature_value - means(:,f_nr)) > 0.1 | st_deviation(:,f_nr) > 0.1;
             if any(larger_than_variance & variance_is_significant)             
                 flag = 0;
                 break;
             end
         end
         if flag == 1
-            % append to neighbourhood
+            % append to neighbourhood, not sure how many are added
             N = [N, inspected_sample];
         end
     end
-    n = N;
     %Neighbourhood ready for statistical analysis
+    neighbourhood = [];
+    for ns=N
+        neighbourhood = [neighbourhood, struct('index', ns, ...
+                        'normal', getFeatureForIndex(13, ns), ...
+                        'pri_albedo', getFeatureForIndex(16, ns), ...
+                        'sec_normal', getFeatureForIndex(28, ns), ...
+                        'sec_albedo', getFeatureForIndex(34, ns)) ];
+    end
     
+    means_neighbourhood = struct( 'normal', mean([neighbourhood.normal], 2), ...
+                    'pri_albedo', mean([neighbourhood.pri_albedo], 2), ...
+                    'sec_normal', mean([neighbourhood.sec_normal], 2), ...
+                    'sec_albedo', mean([neighbourhood.sec_albedo], 2));
+    std_neighbourhood = struct( 'normal', std([neighbourhood.normal], 0, 2), ...
+                    'pri_albedo', std([neighbourhood.pri_albedo], 0, 2), ...
+                    'sec_normal', std([neighbourhood.sec_normal], 0, 2), ...
+                    'sec_albedo', std([neighbourhood.sec_albedo], 0, 2));
     % todo: normalize N, return it
 end
