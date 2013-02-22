@@ -23,12 +23,12 @@ function n = preprocess_samples(k, boxsize, max_samples_box, spp)
             continue;
         end
         j = getIndexByPosition(sample_pos);
-        sample_number = randi([0, 7]); %TODO: make sure a sample isn't chosen twice
+        sample_number = randi([0, 7]); %TODO: make sure a sample isn't chosen twice?
         flag = 1;
         for f_nr = 1:length(features)
             feature_value = getFeatureForIndex(features(f_nr), j + sample_number);
-            larger_than_variance = abs(feature_value - current_pixel_feature_value(f_nr, means)) > 3*current_pixel_feature_value(f_nr, variances);
-            variance_is_significant = abs(feature_value - current_pixel_feature_value(f_nr, means)) > 0.1 | current_pixel_feature_value(f_nr, variances) > 0.1;
+            larger_than_variance = abs(feature_value - means(:,f_nr)) > 3*variances(:,f_nr);
+            variance_is_significant = abs(feature_value - means(:,f_nr)) > 0.1 | variances(:,f_nr) > 0.1;
             if any(larger_than_variance & variance_is_significant)             
                 flag = 0;
                 break;
@@ -43,8 +43,4 @@ function n = preprocess_samples(k, boxsize, max_samples_box, spp)
     %Neighbourhood ready for statistical analysis
     
     % todo: normalize N, return it
-end
-
-function f_mean = current_pixel_feature_value(f_nr, type)
-    f_mean = type(f_nr:(f_nr+2));
 end
