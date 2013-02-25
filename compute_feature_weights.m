@@ -27,7 +27,7 @@ function [a, b] = compute_feature_weights(iter_step, N)
     dependency_f_col_over_f = sum(dependency_col_f, 1); % for each feature, summed up over channels
     sum_dependency_col_f = sum(dependency_f_col_over_f); % for each channel, summed up over all features
     sum_dependency_col_rand = sum(dependency_col_rand);
-    sum_dependency_col_pos = sum(depencency_col_pos);
+    sum_dependency_col_pos = sum(dependency_col_pos);
     b = zeros(size(N.features,1), 1);
     for f_nr=1:size(N.features, 1)
         f_par = N.features(f_nr,:);
@@ -49,6 +49,3 @@ function [a, b] = compute_feature_weights(iter_step, N)
         b(f_nr) = weight_f_col * max(1 - (1 + 0.1*iter_step)*weight_rand_pos, 0);
     end
 end
-
-
-%Computes mutual informatin of two variables
