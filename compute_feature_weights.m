@@ -14,13 +14,9 @@ function [a, b] = compute_feature_weights(iter_step, N)
             dependency_col_pos(channel) = mutualinfo(channel_info, pos_par);
         end
         
-        % TODO: merge all features together to one huge matrix for easier
-        % feature handling?
-        for feature_name = features
-            f = N.(feature_name{1});
-            for f_par = f'
-                dependency_col_f(channel) = dependency_col_f(channel) + mutualinfo(channel_info, f_par);
-            end
+        for f_par = N.features'
+            dependency_col_f(channel) = dependency_col_f(channel) + mutualinfo(channel_info, f_par);
+        end
         end
         % also apply error-term to this?
         weight = dependency_col_rand(channel)/(dependency_col_rand(channel) + dependency_col_pos(channel));
