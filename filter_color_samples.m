@@ -7,6 +7,16 @@ function new_colors = filter_color_samples(bin_import, all_samples_pixel, neighb
     variance_color = variance/(1-sum_weights_col_rand)^2;
     variance_feature = variance_color;
     
-    color_samples = % todo
-    for 
+    color_samples = bin_import(7:9,all_samples_pixel);
+    for i=color_samples
+        new_color = zeros(3,1);
+        w = zeros(3,1);
+        % This loop doesn't work at all!
+        for j=neighbourhood
+            relative_weight = exp(-1/(2*variance_color)*sum(a*(j - i)^2) * ...
+                              exp(-1/(2*variance_feature)*sum(b*(1));
+            new_color = new_color + sum_weights_col_rand*j;
+%             w = w + ;
+        end
+    end
 end
