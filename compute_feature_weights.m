@@ -1,7 +1,8 @@
-function [a, b] = compute_feature_weights(iter_step, N)
+function [a, b, weights_col_rand] = compute_feature_weights(iter_step, N)
     dependency_col_rand = zeros(3,1); %summed up dependency to random parameter and channels
     dependency_col_pos = zeros(3,1);
     dependency_col_f = zeros(3,size(N.features, 1));
+    weights_col_rand = zeros(3,1);
     a = zeros(3,1);
     for channel = 1:3     
         channel_info = N.color(channel,:)';
@@ -19,7 +20,7 @@ function [a, b] = compute_feature_weights(iter_step, N)
             f_nr = f_nr + 1;
         end
         % also apply error-term to this?
-        weight = dependency_col_rand(channel)/(dependency_col_rand(channel) + dependency_col_pos(channel));
+        weights_col_rand(channel) = dependency_col_rand(channel)/(dependency_col_rand(channel) + dependency_col_pos(channel));
         
         % with optimization from tech repport, not as in original paper
         a(channel) = max(1 - 2*(1 + 0.1*(iter_step - 1))*weight, 0);
