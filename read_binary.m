@@ -1,13 +1,12 @@
-fid = fopen('samplebuffer_sanmiguel_diffuse_8spp.bin');
+function [bin_import, spp] = read_binary()
 
-global bin_import;
-global spp
+fid = fopen('samplebuffer_sanmiguel_diffuse_8spp.bin');
 spp = 8;
 bin_import = fread (fid, [9+3*10, 362*620*8],'float');
 'finished reading'
 
 fclose(fid);
-
+end
 %
 % Columns have these values:
 % 1: x-coordinate

@@ -1,7 +1,4 @@
-%samples per pixel
-global spp;
-global bin_import; % only read from bin_import!
-spp = 8;
+[bin_import, spp] = read_binary();
 
 if matlabpool('size') == 0
     matlabpool open
@@ -12,9 +9,9 @@ for boxsize=[55 35 17 7]
     
     %iterate over every pixel
     nr_pixels = length(bin_import)/8;
-    parfor i = 1:nr_pixels
+    for i = 1:nr_pixels
         all_samples_pixel = (i-1)*8+1:((i-1)*8 + 7);
-        neighbourhood = preprocess_samples(all_samples_pixel, boxsize, max_samples_box, spp);
+        neighbourhood = preprocess_samples(bin_import, all_samples_pixel, boxsize, max_samples_box, spp);
         %[a, b] = compute_feature_weights(boxsize, N);
         %waitbar(i*8/length(bin_import), progress, int2str(i))
     end 
