@@ -4,7 +4,7 @@ if matlabpool('size') == 0
     matlabpool open
 end
 %progress = waitbar(0, 'zomfg..');
-boxsizes=[55 35 17 7]
+boxsizes=[55 35 17 7];
 for iter_step = 1:4
     boxsize = boxsizes(iter_step);
     max_samples_box = boxsize^2*spp/2;
