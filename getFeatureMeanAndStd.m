@@ -1,7 +1,7 @@
 % Assumes that all features are vectors with 3 dimensions
 % f is the index that the first dimension is saved
 function [mean_f, std_f] = getFeatureMeanAndStd(bin_import, features, i)
-    global spp;
+    spp = 8;
     mean_f = zeros(3,length(features));
     std_f = zeros(3,length(features));
     for f_nr = 1:length(features)

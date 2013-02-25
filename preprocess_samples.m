@@ -26,7 +26,7 @@ function neighbourhood = preprocess_samples(bin_import, k, boxsize, max_samples_
         inspected_sample = j + sample_number;
         flag = 1;
         for f_nr = 1:length(features)
-            feature_value = getFeatureForIndex(features(f_nr), inspected_sample);
+            feature_value = getFeatureForIndex(bin_import, features(f_nr), inspected_sample);
             larger_than_variance = abs(feature_value - means(:,f_nr)) > 3*st_deviation(:,f_nr);
             variance_is_significant = abs(feature_value - means(:,f_nr)) > 0.1 | st_deviation(:,f_nr) > 0.1;
             if any(larger_than_variance & variance_is_significant)             
@@ -42,17 +42,24 @@ function neighbourhood = preprocess_samples(bin_import, k, boxsize, max_samples_
     %Neighbourhood ready for statistical analysis
     
     neighbourhood = struct('index', N, ...
-                    'normals', getFeatureForIndex(13, N), ...
-                    'pri_albedos', getFeatureForIndex(16, N), ...
-                    'sec_normals', getFeatureForIndex(28, N), ...
-                    'sec_albedos', getFeatureForIndex(34, N));
+                    'color', getFeatureForIndex(bin_import, 7, N), ...
+                    'normals', getFeatureForIndex(bin_import, 13, N), ...
+                    'pri_albedos', getFeatureForIndex(bin_import, 16, N), ...
+                    'pri_intersec', getFeatureForIndex(bin_import, 19, N), ...
+                    'sec_normals', getFeatureForIndex(bin_import, 28, N), ...
+                    'sec_albedos', getFeatureForIndex(bin_import, 34, N), ...
+                    'sec_intersec', getFeatureForIndex(bin_import, 21, N), ...
+                    'lens_coord', bin_import(4:5, N)); %random parameter!
               
     %neighbourhood = structfun(@normalize, neighbourhood);
     % possible refactor: do this with structfun
+    neighbourhood.color = bsxfun(@rdivide, bsxfun(@minus, neighbourhood.color, mean(neighbourhood.color, 2)), std(neighbourhood.color, 0, 2));
     neighbourhood.normals = bsxfun(@rdivide, bsxfun(@minus, neighbourhood.normals, mean(neighbourhood.normals, 2)), std(neighbourhood.normals, 0, 2));
     neighbourhood.pri_albedos = bsxfun(@rdivide, bsxfun(@minus, neighbourhood.pri_albedos, mean(neighbourhood.pri_albedos, 2)), std(neighbourhood.pri_albedos, 0, 2));
     neighbourhood.sec_normals = bsxfun(@rdivide, bsxfun(@minus, neighbourhood.sec_normals, mean(neighbourhood.sec_normals, 2)), std(neighbourhood.sec_normals, 0, 2));
     neighbourhood.sec_albedos = bsxfun(@rdivide, bsxfun(@minus, neighbourhood.sec_albedos, mean(neighbourhood.sec_albedos, 2)), std(neighbourhood.sec_albedos, 0, 2));
+    neighbourhood.pri_intersec = bsxfun(@rdivide, bsxfun(@minus, neighbourhood.pri_intersec, mean(neighbourhood.pri_intersec, 2)), std(neighbourhood.pri_intersec, 0, 2));
+    neighbourhood.sec_intersec = bsxfun(@rdivide, bsxfun(@minus, neighbourhood.sec_intersec, mean(neighbourhood.sec_intersec, 2)), std(neighbourhood.sec_intersec, 0, 2));
 end
 
 function normalized_neigh = normalize(neighbourhood_f)
