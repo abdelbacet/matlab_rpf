@@ -23,7 +23,7 @@ function [a, b, weights_col_rand] = compute_feature_weights(iter_step, N)
         weights_col_rand(channel) = dependency_col_rand(channel)/(dependency_col_rand(channel) + dependency_col_pos(channel));
         
         % with optimization from tech repport, not as in original paper
-        a(channel) = max(1 - 2*(1 + 0.1*(iter_step - 1))*weight, 0);
+        a(channel) = max(1 - 2*(1 + 0.1*(iter_step - 1))*weights_col_rand(channel), 0);
     end
     dependency_f_col_over_f = sum(dependency_col_f, 1); % for each feature, summed up over channels
     sum_dependency_col_f = sum(dependency_f_col_over_f); % for each channel, summed up over all features
