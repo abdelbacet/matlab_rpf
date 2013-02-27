@@ -1,8 +1,7 @@
-function print_8s_mc_img()
+function print_img(bin_import, name, spp)
     %initialize image
     img = zeros(620, 362, 3);
     % Number of samples per pixel
-    spp = 8;
 
     N = size(bin_import, 2);
     for i = 1:spp:N
@@ -14,5 +13,5 @@ function print_8s_mc_img()
         img(y+1, x+1, :) = [r g b];
     end
     imtool(img)
-    exrwrite(img, 'img_01.exr');
+    exrwrite(img, name);
 end

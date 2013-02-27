@@ -17,8 +17,10 @@ for iter_step = 1:4
         neighbourhood = preprocess_samples(bin_import, all_samples_pixel, boxsize, max_samples_box, spp);
         [a, b, weights_col_rand] = compute_feature_weights(iter_step, neighbourhood);
         new_colors(:, all_samples_pixel) = filter_color_samples(bin_import, all_samples_pixel, neighbourhood, a, b, weights_col_rand, spp);
+        %fprintf('pixel: %d \n', i);
     end
     
     % TODO: write new_colors back into bin_import
     fprintf('finished iteration step!');
+    print_img(bin_import, 'iter' + iter_step, spp);
 end
