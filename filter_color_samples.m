@@ -15,9 +15,10 @@ function new_colors = filter_color_samples(bin_import, all_samples_pixel, neighb
         sum_relative_weights = zeros(3,1);
         % This loop doesn't work at all!
         for j=1:length(neighbourhood.color)
-            relative_weight = exp(-1/(2*variance_color)*sum(a*(current_pixel.color(i) - neighbourhood.color(j))^2)) * ...
-                              exp(-1/(2*variance_feature)*sum(b*(current_pixel.features(i) - neighbourhood.features(j))^2));
-            new_colors(:,i) = new_colors(:,i) + relative_weight*neighbourhood.color(j);
+            relative_weight = exp(-1/(2*variance_color)*sum(a.*(current_pixel.color(:,i) - neighbourhood.color(:,j)).^2)) .* ...
+                              exp(-1/(2*variance_feature)*sum(b.*(current_pixel.features(:,i) - neighbourhood.features(:,j)).^2));
+            % for this we have to use unnormalized color!
+            new_colors(:,i) = new_colors(:,i) + relative_weight*bin_import(7:9,neighbourhood.index(j));
             sum_relative_weights = sum_relative_weights + relative_weight;
         end
         new_colors(:,i) = new_colors(:,i)./sum_relative_weights;

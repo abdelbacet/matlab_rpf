@@ -4,7 +4,8 @@ function out = makeStruct(bin_import, N)
 %   colors, positions, features (various) and random params (lens coordinate).
 %   The given struct is also NORMALIZED
 
-    out = struct( 'color', bin_import(7:9, N), ...
+    out = struct(   'index', N, ...
+                    'color', bin_import(7:9, N), ...
                     'pos', mean(bin_import(1:2, N)), ...
                     'features', [   bin_import(13:15, N); ...
                                     bin_import(16:18, N); ...
@@ -19,9 +20,13 @@ function out = makeStruct(bin_import, N)
     f_names = fieldnames(out);
     for f_nr = 1:length(f_names)
         f_name = f_names{f_nr};
-        out.(f_name) = bsxfun(@rdivide, ...
-                bsxfun(@minus, out.(f_name), mean(out.(f_name), 2)), ...
-                std(out.(f_name), 0, 2));
+        if strcmp(f_name, 'index')
+            continue;
+        removed_mean = bsxfun(@minus, out.(f_name), mean(out.(f_name), 2));
+        divided_by_std = bsxfun(@rdivide, removed_mean, std(removed_mean, 0, 2));
+        % Need to correct std = 0!
+        divided_by_std(isnan(divided_by_std)) = 0;
+        out.(f_name) = divided_by_std;
     end
 end
 
