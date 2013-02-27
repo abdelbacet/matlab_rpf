@@ -41,7 +41,7 @@ function [a, b, weights_col_rand] = compute_feature_weights(iter_step, N)
         for pos_par = N.pos'
             dependency_f_pos = dependency_f_pos + mutualinfo(pos_par, f_par);
         end
-
+        
         
         weight_rand_pos = dependency_f_rand/(dependency_f_rand + dependency_f_pos);
         weight_f_col = dependency_f_col_over_f(f_nr)/ ...
