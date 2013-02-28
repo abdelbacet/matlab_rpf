@@ -12,22 +12,15 @@ function new_colors = filter_color_samples(bin_import, all_samples_pixel, neighb
     
     % todo: use samples_struct instead of other stuff
     for i=1:(spp-1)
-        
-       
-        error_color = bsxfun(@minus, neighbourhood.color, current_pixel.color(:,i)).^2;
-        weighted_error_color = bsxfun(@times, error_color, a);
-        sum_wec = sum(weighted_error_color);
-        
-        error_features = bsxfun(@minus, neighbourhood.features, current_pixel.features(:,i)).^2;
-        weighted_error_features = bsxfun(@times, error_features, b);
-        sum_wef = sum(weighted_error_features);
-        
-        relative_weights =    exp(-1/(2*variance_color)*sum_wec) .* ...
-                              exp(-1/(2*variance_feature)*sum_wef);
-       
-        new_colors(:,i) = sum(bsxfun(@times, neighbourhood.color_unnormed, relative_weights),2);
-        sum_relative_weights = sum(relative_weights);
+        sum_relative_weights = zeros(3,1);
+        % This loop doesn't work at all!
+        for j=1:length(neighbourhood.color)
+            relative_weight = exp(-1/(2*variance_color)*sum(a.*(current_pixel.color(:,i) - neighbourhood.color(:,j)).^2)) .* ...
+                              exp(-1/(2*variance_feature)*sum(b.*(current_pixel.features(:,i) - neighbourhood.features(:,j)).^2));
+            % for this we have to use unnormalized color!
+            new_colors(:,i) = new_colors(:,i) + relative_weight*bin_import(7:9,neighbourhood.index(j));
+            sum_relative_weights = sum_relative_weights + relative_weight;
+        end
         new_colors(:,i) = new_colors(:,i)./sum_relative_weights;
-        
     end
 end
