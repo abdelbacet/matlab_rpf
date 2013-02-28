@@ -24,9 +24,7 @@ function out = makeStruct(bin_import, N)
             continue;
         end
         removed_mean = bsxfun(@minus, out.(f_name), mean(out.(f_name), 2));
-        divided_by_std = bsxfun(@rdivide, removed_mean, std(removed_mean, 0, 2));
-        % Need to correct std = 0
-        divided_by_std(isnan(divided_by_std)) = 0.0;
+        divided_by_std = bsxfun(@rdivide, removed_mean, std(removed_mean, 0, 2) + 1e-10);
         out.(f_name) = divided_by_std;
     end
 end

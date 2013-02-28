@@ -12,8 +12,10 @@ function neighbourhood = preprocess_samples(bin_import, k, boxsize, max_samples_
     % World-Space position of second intersection
     % secondary normal
     % secondary albedo (texture value second intersection)
-    features = [13, 19, 16, 21, 28, 34];
-    [means, st_deviation] = getFeatureMeanAndStd(bin_import, features, k, spp);
+    idx_features = [13:15, 19:21, 16:18, 21:23, 28:30, 34:36];
+    means        = sum(bin_import(idx_features, N), 2) / numel(N);
+    st_deviation = std(bin_import(idx_features, N), 0, 2);
+%     [means, st_deviation] = getFeatureMeanAndStd(bin_import, features, k, spp);
     mu = repmat(mean_position, [1, max_samples_box - spp]);
     sample_pos_array = round(normrnd(mu, standard_deviation));
     for sample_pos = sample_pos_array
@@ -24,17 +26,10 @@ function neighbourhood = preprocess_samples(bin_import, k, boxsize, max_samples_
         j = getIndexByPosition(sample_pos);
         sample_number = randi([0, 7]); %TODO: make sure a sample isn't chosen twice?
         inspected_sample = j + sample_number;
-        flag = 1;
-        for f_nr = 1:length(features)
-            feature_value = bin_import(features(f_nr):(features(f_nr)+2), inspected_sample);
-            larger_than_variance = abs(feature_value - means(:,f_nr)) > 3*st_deviation(:,f_nr);
-            variance_is_significant = abs(feature_value - means(:,f_nr)) > 0.1 | st_deviation(:,f_nr) > 0.1;
-            if any(larger_than_variance & variance_is_significant)             
-                flag = 0;
-                break;
-            end
-        end
-        if flag == 1
+        feature_values = bin_import(idx_features, inspected_sample);
+        larger_than_variance = abs(feature_values - means) > 3*st_deviation;
+        variance_is_significant = abs(feature_values - means) > 0.1 | st_deviation > 0.1;
+        if not(any(larger_than_variance & variance_is_significant))
             % append to neighbourhood, not sure how many are added
             N = [N, inspected_sample];
         end
