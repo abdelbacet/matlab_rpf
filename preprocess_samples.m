@@ -23,7 +23,11 @@ function neighbourhood = preprocess_samples(bin_import, k, boxsize, max_samples_
         if (any(sample_pos < [1,1]' | sample_pos > [620, 362]') || all(sample_pos == mean_position))
             continue;
         end
-        j = getIndexByPosition(sample_pos);
+        % find out index in bin_import of this position
+        img_width = 362;
+        j = round(sample_pos(1) - 1) + img_width*round(sample_pos(2) - 1);
+        j = j*spp + 1; % multiply by spp, usual adaption for matlab lists
+        
         sample_number = randi([0, 7]); %TODO: make sure a sample isn't chosen twice?
         inspected_sample = j + sample_number;
         feature_values = bin_import(idx_features, inspected_sample);
