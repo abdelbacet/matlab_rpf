@@ -24,7 +24,9 @@ for iter_step = 4
     end
     
     % write new_colors back into bin_import 
+    % TODO: DO QUESTION THE MATLAB MAGIC
     % (don't question the matlab magic)
+    permute(new_colors,[1 3 2]);
     bin_import(7:9, :) = reshape(new_colors, [], size(new_colors, 2), 1)';
     fprintf('finished iteration step!');
     print_img(bin_import, ['iter_' num2str(iter_step) '_v' version], spp);
