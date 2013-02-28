@@ -4,8 +4,7 @@ function out = makeStruct(bin_import, N)
 %   colors, positions, features (various) and random params (lens coordinate).
 %   The given struct is also NORMALIZED
 
-    out = struct(   'index', N, ...
-                    'color', bin_import(7:9, N), ...
+    out = struct(   'color', bin_import(7:9, N), ...
                     'color_unnormed', bin_import(7:9, N), ...
                     'pos', bin_import(1:2, N), ...
                     'features', [   bin_import(13:15, N); ...
@@ -16,12 +15,11 @@ function out = makeStruct(bin_import, N)
                                 	bin_import(21:23, N)], ...
                     'lens_coord', bin_import(4:5, N)); %random parameter!
                 
-    % Normalize all members of the struct
-    % possible refactor: do this with structfun
+    % Normalize all members of the struct except special color field
     f_names = fieldnames(out);
     for f_nr = 1:length(f_names)
         f_name = f_names{f_nr};
-        if strcmp(f_name, 'index') || strcmp(f_name, 'color_unnormed');
+        if strcmp(f_name, 'color_unnormed');
             continue;
         end
         removed_mean = bsxfun(@minus, out.(f_name), mean(out.(f_name), 2));

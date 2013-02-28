@@ -2,7 +2,8 @@ function neighbourhood = preprocess_samples(bin_import, k, boxsize, max_samples_
     if nargin < 4
         spp = 8;
     end
-    mean_position = [floor(mean(bin_import(1,k:k+spp-1))), floor(mean(bin_import(2,k:k+spp-1)))]';
+    %img_width = 362;
+    mean_position = [floor(bin_import(1,k)), floor(bin_import(2,k))]';
     standard_deviation = boxsize/4;
     % add all samples of current pixel
     N = k:k+7; 
@@ -24,8 +25,7 @@ function neighbourhood = preprocess_samples(bin_import, k, boxsize, max_samples_
             continue;
         end
         % find out index in bin_import of this position
-        img_width = 362;
-        j = round(sample_pos(1) - 1) + img_width*round(sample_pos(2) - 1);
+        j = round(sample_pos(1) - 1) + 362*round(sample_pos(2) - 1);
         j = j*spp + 1; % multiply by spp, usual adaption for matlab lists
         
         sample_number = randi([0, 7]); %TODO: make sure a sample isn't chosen twice?
