@@ -16,9 +16,12 @@ function neighbourhood = preprocess_samples(bin_import, k, boxsize, max_samples_
     idx_features = [13:15, 19:21, 16:18, 21:23, 28:30, 34:36];
     means        = sum(bin_import(idx_features, N), 2) / numel(N);
     st_deviation = std(bin_import(idx_features, N), 0, 2);
-%     [means, st_deviation] = getFeatureMeanAndStd(bin_import, features, k, spp);
     mu = repmat(mean_position, [1, max_samples_box - spp]);
     sample_pos_array = round(normrnd(mu, standard_deviation));
+    % todo: rework first if into:
+    %bsxfun(@lt, sample_pos_array, [1,1]');
+    %bsxfun(@gt, sample_pos_array, [620, 362]');
+    %bsxfun(@eq, sample_pos_array, mean_position);
     for sample_pos = sample_pos_array
         % skip if out of range or at initial position
         if (any(sample_pos < [1,1]' | sample_pos > [620, 362]') || all(sample_pos == mean_position))
