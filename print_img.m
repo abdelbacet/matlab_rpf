@@ -13,5 +13,5 @@ function print_img(bin_import, name, spp)
         img(y+1, x+1, :) = [r g b];
     end
     imtool(img)
-    exrwrite(img, name);
+    exrwrite(img, [name '.exr']);
 end
