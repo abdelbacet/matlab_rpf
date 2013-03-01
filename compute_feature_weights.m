@@ -7,11 +7,11 @@ function [a, b, weights_col_rand] = compute_feature_weights(iter_step, N)
     for channel = 1:3     
         channel_info = N.color(channel,:)';
         for random_par = N.lens_coord'
-            dependency_col_rand(channel) = mutualinfo(channel_info, random_par);
+            dependency_col_rand(channel) = dependency_col_rand(channel) + mutualinfo(channel_info, random_par);
         end
         
         for pos_par = N.pos' 
-            dependency_col_pos(channel) = mutualinfo(channel_info, pos_par);
+            dependency_col_pos(channel) = dependency_col_pos(channel) + mutualinfo(channel_info, pos_par);
         end
         
         f_nr = 1;

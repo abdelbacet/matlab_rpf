@@ -10,7 +10,7 @@ end
 %initializes random generator
 rng(42);
 boxsizes=[55 35 17 7];
-for iter_step = 4
+for iter_step = 1:4
     tic
     boxsize = boxsizes(iter_step);
     max_samples_box = boxsize^2*spp/2;
@@ -19,8 +19,8 @@ for iter_step = 4
     nr_pixels = length(bin_import)/8;
     %new_colors = zeros(3, length(bin_import));
     new_colors = zeros(length(bin_import)/8, 3, 8);
-    for i = 1:nr_pixels
-        all_samples_pixel = (i-1)*8+1:((i-1)*8 + 8);
+    parfor i = 1:nr_pixels
+        all_1samples_pixel = (i-1)*8+1:((i-1)*8 + 8);
         neighbourhood = preprocess_samples(bin_import, all_samples_pixel, boxsize, max_samples_box, spp);
         [a, b, weights_col_rand] = compute_feature_weights(iter_step, neighbourhood);
         new_colors(i,:,:) = filter_color_samples(bin_import, all_samples_pixel, neighbourhood, a, b, weights_col_rand, spp);
