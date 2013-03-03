@@ -1,6 +1,6 @@
 % Starts the random parameter filtering algorithm
 
-version = '1.1.2';
+version = '1.1.3';
 [bin_import, spp] = read_binary();
 
 if matlabpool('size') == 0
@@ -20,7 +20,7 @@ for iter_step = 1:4
     %new_colors = zeros(3, length(bin_import));
     new_colors = zeros(length(bin_import)/8, 3, 8);
     parfor i = 1:nr_pixels
-        all_1samples_pixel = (i-1)*8+1:((i-1)*8 + 8);
+        all_samples_pixel = (i-1)*8+1:((i-1)*8 + 8);
         neighbourhood = preprocess_samples(bin_import, all_samples_pixel, boxsize, max_samples_box, spp);
         [a, b, weights_col_rand] = compute_feature_weights(iter_step, neighbourhood);
         new_colors(i,:,:) = filter_color_samples(bin_import, all_samples_pixel, neighbourhood, a, b, weights_col_rand, spp);
