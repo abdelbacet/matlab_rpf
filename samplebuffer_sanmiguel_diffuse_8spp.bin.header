@@ -6,7 +6,7 @@ CoC coefficients (coc radius = C0/w+C1): -0.000000,0.000000
 Pixel-to-camera matrix: 0.004132,0.000000,0.000000,-0.750000,0.000000,-0.004132,0.000000,1.652893,0.000000,0.000000,0.000000,1.000000,0.000000,0.000000,-99.999001,100.000000
 Encoding = binary
 x,y,w,u,v,t,r,g,b,pri_mv(3d),pri_normal(3d),albedo(3d),sec_origin(3d),sec_hitpoint(3d),sec_mv(3d),sec_normal(3d),direct(3d),sec_albedo(3d),sec_direct(3d)
-
+1,2,3,4,5,6,7,8,9,10        ,13            ,16        ,19            ,22              ,25        ,28
 Width and Height specify the dimensions of the image, in pixels. Samples 
 per pixel says how many samples to expect. The CoC coefficients give 
 formulas for computing the slope dx/du and dy/dv given the camera space 
