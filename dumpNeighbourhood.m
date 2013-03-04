@@ -31,8 +31,8 @@ for iter_step = 1
     % Number of samples per pixel
     size(neighbourhood.features, 2)
     for i = neighbourhood_idxs
-        x = floor(mod(i/8, size(img,2))) + 1;
-        y = floor(i/8/size(img,2)) + 1;
+        x = floor(mod(i/8, size(img,2)));
+        y = floor(i/8/size(img,2));
         img(y , x, :) = [1,1,1];
     end
     img(inspected_pos(2), inspected_pos(1), :) = [1,0,0];

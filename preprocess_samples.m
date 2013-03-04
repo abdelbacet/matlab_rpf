@@ -5,9 +5,9 @@ function [neighbourhood, N] = preprocess_samples(bin_import, k, boxsize, max_sam
     
 
     % Normal of first intersection => 13:15
-    % World-Space position of first intersection => 19:21
     % primary albedo (texture value of first intersection) = sec_origin =>
     % 16:18
+    % World-Space position of first intersection => 19:21
     % World-Space position of second intersection => 22:24
     % secondary normal => 28:30
 
