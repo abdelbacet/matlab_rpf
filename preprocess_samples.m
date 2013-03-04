@@ -1,4 +1,4 @@
-function neighbourhood = preprocess_samples(bin_import, k, boxsize, max_samples_box, spp)
+function [neighbourhood, N] = preprocess_samples(bin_import, k, boxsize, max_samples_box, spp)
     %img_width = 362;
     mean_position = [floor(bin_import(1,k(1))), floor(bin_import(2,k(1)))]';
     standard_deviation = boxsize/4;
@@ -26,6 +26,7 @@ function neighbourhood = preprocess_samples(bin_import, k, boxsize, max_samples_
     inside_img = all(bsxfun(@ge, sample_pos_array, [0,0]') & bsxfun(@le, sample_pos_array, [620, 362]'), 1);
     not_initial_pos = any(bsxfun(@ne, sample_pos_array, mean_position), 1);
     valid_sample_pos = sample_pos_array(:, inside_img & not_initial_pos);
+    % contains img_width
     valid_sample_idxs = valid_sample_pos(1,:) + 362*valid_sample_pos(2,:);
     valid_sample_idxs = valid_sample_idxs*spp + 1;
     valid_sample_idxs = valid_sample_idxs + randi([0, 7], size(valid_sample_idxs));
