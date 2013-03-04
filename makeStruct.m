@@ -14,9 +14,6 @@ function out = makeStruct(bin_import, N)
     f_names = fieldnames(out);
     for f_nr = 1:length(f_names)
         f_name = f_names{f_nr};
-        if strcmp(f_name, 'color_unnormed');
-            continue;
-        end
         removed_mean = bsxfun(@minus, out.(f_name), mean(out.(f_name), 2));
         divided_by_std = bsxfun(@rdivide, removed_mean, std(removed_mean, 0, 2) + 1e-10);
         out.(f_name) = divided_by_std;
