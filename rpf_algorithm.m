@@ -1,6 +1,6 @@
 % Starts the random parameter filtering algorithm
 
-version = '1.1.3';
+version = '1.1.6';
 [bin_import, spp] = read_binary();
 
 if matlabpool('size') == 0
@@ -34,4 +34,9 @@ for iter_step = 1:4
     bin_import(7:9, :) = reshape(new_colors, 3, []);
     fprintf('finished iteration step!');
     print_img(bin_import, ['iter_' num2str(iter_step) '_v' version], spp);
+end
+
+std_factors = [0.2, 0.3, 0.5, 0.75, 1, 2];
+parfor k= 1:length(std_factors)
+    print_img_without_spikes(bin_import, ['final_v' version], std_factors(k), spp)
 end
