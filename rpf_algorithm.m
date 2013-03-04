@@ -1,6 +1,6 @@
 % Starts the random parameter filtering algorithm
 
-version = '1.1.6';
+version = '1.2.0';
 [bin_import, spp] = read_binary();
 
 if matlabpool('size') == 0
@@ -9,9 +9,9 @@ end
 %progress = waitbar(0, 'zomfg..');
 %initializes random generator
 rng(42);
+tic
 boxsizes=[55 35 17 7];
 for iter_step = 1:4
-    tic
     boxsize = boxsizes(iter_step);
     max_samples_box = boxsize^2*spp/2;
     
@@ -25,14 +25,13 @@ for iter_step = 1:4
         [a, b, weights_col_rand] = compute_feature_weights(iter_step, neighbourhood);
         new_colors(i,:,:) = filter_color_samples(bin_import, all_samples_pixel, neighbourhood, a, b, weights_col_rand, spp);
     end
-    toc
     
     % write new_colors back into bin_import 
     % Some conversion is necessary due to parallel support of new_colors
     % matrix
     new_colors = permute(new_colors, [2 3 1]);
     bin_import(7:9, :) = reshape(new_colors, 3, []);
-    fprintf('finished iteration step!');
+    fprintf('finished iteration step! \n');
     print_img(bin_import, ['iter_' num2str(iter_step) '_v' version], spp);
 end
 
@@ -40,3 +39,4 @@ std_factors = [0.2, 0.3, 0.5, 0.75, 1, 2];
 parfor k= 1:length(std_factors)
     print_img_without_spikes(bin_import, ['final_v' version], std_factors(k), spp)
 end
+toc

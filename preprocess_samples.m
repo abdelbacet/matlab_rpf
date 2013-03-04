@@ -23,7 +23,7 @@ function [neighbourhood, N] = preprocess_samples(bin_import, k, boxsize, max_sam
     mu = repmat(mean_position, [1, max_samples_box - spp]);
     sample_pos_array = round(normrnd(mu, standard_deviation));
     % todo: rework first if into various bsxfun/logical operators:
-    inside_img = all(bsxfun(@ge, sample_pos_array, [0,0]') & bsxfun(@le, sample_pos_array, [362, 620]'), 1);
+    inside_img = all(bsxfun(@ge, sample_pos_array, [0,0]') & bsxfun(@lt, sample_pos_array, [362, 620]'), 1);
     not_initial_pos = any(bsxfun(@ne, sample_pos_array, mean_position), 1);
     valid_sample_pos = sample_pos_array(:, inside_img & not_initial_pos);
     % contains img_width
