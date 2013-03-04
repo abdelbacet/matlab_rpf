@@ -1,12 +1,5 @@
-% Starts the random parameter filtering algorithm
-
-version = '1.1.4';
 [bin_import, spp] = read_binary();
 
-if matlabpool('size') == 0
-    matlabpool open
-end
-%progress = waitbar(0, 'zomfg..');
 %initializes random generator
 rng(42);
 boxsizes=[55 35 17 7];
@@ -37,5 +30,4 @@ for iter_step = 1
     end
     img(inspected_pos(2), inspected_pos(1), :) = [1,0,0];
     imtool(img)
-    exrwrite(img, 'neighbourhood.exr');
 end
