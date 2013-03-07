@@ -1,8 +1,7 @@
-bin_import = evalin('base', 'bin_import');
+[bin_import, spp]= read_binary;
 %initialize image
 img = zeros(620, 362, 3);
 % Number of samples per pixel
-spp = 8;
 
 N = size(bin_import, 2);
 

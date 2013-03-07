@@ -11,7 +11,7 @@ function new_colors = filter_color_samples(bin_import, all_samples_pixel, neighb
     current_pixel = makeStruct(bin_import, all_samples_pixel);
     
     % todo: use samples_struct instead of other stuff
-    for i=1:(spp-1)
+    for i=1:spp
         
        
         error_color = bsxfun(@minus, neighbourhood.color, current_pixel.color(:,i)).^2;
@@ -27,7 +27,6 @@ function new_colors = filter_color_samples(bin_import, all_samples_pixel, neighb
        
         new_colors(:,i) = sum(bsxfun(@times, neighbourhood.color_unnormed, relative_weights),2);
         sum_relative_weights = sum(relative_weights);
-        new_colors(:,i) = new_colors(:,i)./sum_relative_weights;
-        
+        new_colors(:,i) = new_colors(:,i)./sum_relative_weights;       
     end
 end
