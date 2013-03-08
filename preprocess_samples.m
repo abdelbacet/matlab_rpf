@@ -5,10 +5,9 @@ function [neighbourhood, N] = preprocess_samples(bin_import, k, boxsize, max_sam
     
 
     % Normal of first intersection => 13:15
-    % primary albedo (texture value of first intersection) = sec_origin =>
-    % 16:18
-    % World-Space position of first intersection => 19:21
-    % World-Space position of second intersection => 22:24
+    % primary albedo (texture value of first intersection) => 16:18
+    % World-Space position of first intersection (sec_origin) => 19:21
+    % World-Space position of second intersection (sec_hitpoint) => 22:24
     % secondary normal => 28:30
 
     idx_features = [13:24, 28:30];
@@ -29,6 +28,8 @@ function [neighbourhood, N] = preprocess_samples(bin_import, k, boxsize, max_sam
     % contains img_width
     valid_sample_idxs = valid_sample_pos(1,:) + 362*valid_sample_pos(2,:);
     valid_sample_idxs = valid_sample_idxs*spp + 1;
+    % samples might occur multiple times, but that's ok 
+    % (importance sampling)
     valid_sample_idxs = valid_sample_idxs + randi([0, 7], size(valid_sample_idxs));
     
     feature_values = bin_import(idx_features, valid_sample_idxs);
