@@ -5,7 +5,7 @@ function [bin_import, spp] = read_binary()
 
     % bin_import = single(fread (fid, [9+3*10, 362*620*8],'float'));
     % mutual information library only takes double
-    bin_import = fread (fid, [9+3*10, 362*620*8],'float');
+    bin_import = fread (fid, [9+3*10, 362*620*spp],'float');
     'finished reading'
 
     fclose(fid);
