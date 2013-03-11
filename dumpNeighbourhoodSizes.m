@@ -9,7 +9,7 @@ end
 %initializes random generator
 rng(42);
 boxsizes=[55 35 17 7];
-for iter_step = 4
+for iter_step = 1
     boxsize = boxsizes(iter_step);
     max_samples_box = boxsize^2*spp/2;
     
@@ -29,5 +29,5 @@ for iter_step = 4
         img(y , x, :) = img_arry(i + 1);
     end
     
-    exrwrite(img, 'neighbourhoods.exr');
+    exrwrite(img, 'neighbourhoods_bs55.exr');
 end
