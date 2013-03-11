@@ -32,11 +32,11 @@ for iter_step = 1:4
     new_colors = permute(new_colors, [2 3 1]);
     bin_import(7:9, :) = reshape(new_colors, 3, []);
     fprintf('finished iteration step! \n');
-    print_img(bin_import, ['iter_' num2str(iter_step) '_v' version], spp);
+    img = print_img(bin_import, ['iter_' num2str(iter_step) '_v' version], spp);
 end
-
-std_factors = [0.2, 0.3, 0.5, 0.75, 1, 2];
-parfor k= 1:length(std_factors)
-    print_img_without_spikes(bin_import, ['final_v' version], std_factors(k), spp)
-end
-toc
+% 
+% std_factors = [0.2, 0.3, 0.5, 0.75, 1, 2];
+% parfor k= 1:length(std_factors)
+%     print_img_without_spikes(bin_import, ['final_v' version], std_factors(k), spp)
+% end
+% toc
