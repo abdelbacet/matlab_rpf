@@ -1,6 +1,6 @@
 % Starts the random parameter filtering algorithm
 
-version = '1.2.1';
+version = '1.2.2';
 [bin_import, spp] = read_binary();
 
 if matlabpool('size') == 0
