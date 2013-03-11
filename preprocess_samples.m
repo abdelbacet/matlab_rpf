@@ -34,7 +34,7 @@ function [neighbourhood, N] = preprocess_samples(bin_import, k, boxsize, max_sam
     
     feature_values = bin_import(idx_features, valid_sample_idxs);
     diff_features = abs(bsxfun(@minus, feature_values, means));
-    larger_than_variance = bsxfun(@gt, feature_values, adapted_std);
+    larger_than_variance = bsxfun(@gt, diff_features, adapted_std);
     variance_is_significant = diff_features > 0.1 | repmat(st_deviation > 0.1, size(valid_sample_idxs));
     chosen_samples = not(any(larger_than_variance & variance_is_significant, 1));
     
