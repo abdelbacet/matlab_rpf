@@ -31,7 +31,7 @@ function [neighbourhood, N] = preprocess_samples(bin_import, k, boxsize, max_sam
     % samples might occur multiple times, but that's ok 
     % (importance sampling)
     valid_sample_idxs = valid_sample_idxs + randi([0, 7], size(valid_sample_idxs));
-    
+    valid_sample_idxs = unique(valid_sample_idxs);
     feature_values = bin_import(idx_features, valid_sample_idxs);
     diff_features = abs(bsxfun(@minus, feature_values, means));
     larger_than_variance = bsxfun(@gt, diff_features, adapted_std);
