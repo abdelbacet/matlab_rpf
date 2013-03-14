@@ -9,7 +9,8 @@ function out = makeStruct(bin_import, N)
                     'features', [   bin_import(13:15, N); ...
                                     bin_import(19:24, N); ...
                                 	bin_import(28:30, N)], ...
-                    'random_pars', bin_import(4:5, N)); %random parameter: lens pos and time!
+                    'random_pars', [ bin_import(4:5, N); ... lens pos
+                                     bin_import(22:24, N) - bin_import(19:21, N)] ); % first reflection dir
                 
     % Normalize all members of the struct except special color field
     f_names = fieldnames(out);
