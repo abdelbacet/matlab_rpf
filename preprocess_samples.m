@@ -5,20 +5,20 @@ function [neighbourhood, N] = preprocess_samples(bin_import, k, boxsize, max_sam
     
 
     % Normal of first intersection => 13:15
-    % REMOVED primary albedo (texture value of first intersection) => 16:18
+    % primary albedo (texture value of first intersection) => 16:18
     % World-Space position of first intersection (sec_origin) => 19:21
     % World-Space position of second intersection (sec_hitpoint) => 22:24
     % secondary normal => 28:30
 
-    idx_features = [13:15, 19:24, 28:30];
+    idx_features = [13:24, 28:30];
     means        = sum(bin_import(idx_features, k), 2) / numel(k);
     st_deviation = std(bin_import(idx_features, k), 0, 2);
     % todo: weight std here as follows: 
     % world-position x 30
     % everything else x 3
-    adapted_std = [ 3*st_deviation(1:3) 
-                    30*st_deviation(4:9) 
-                    3*st_deviation(10:12)];
+    adapted_std = [ 3*st_deviation(1:6) 
+                    30*st_deviation(7:12) 
+                    3*st_deviation(13:15)];
     mu = repmat(mean_position, [1, max_samples_box - spp]);
     sample_pos_array = round(normrnd(mu, standard_deviation));
     % todo: rework first if into various bsxfun/logical operators:
