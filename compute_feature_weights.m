@@ -48,9 +48,8 @@ function [a, b, weights_col_rand] = compute_feature_weights(iter_step, N)
         weight_f_rand = dependency_f_rand/(dependency_f_rand + dependency_f_pos + 1e-10);
         
         % added epsilon to prevent degeneration (is this ok here?)
-        weight_f_col = dependency_f_col_over_f(f_nr)/ (...
-                                                sum_dependency_col_overall + 1e-10);
+        weight_f_col = dependency_f_col_over_f(f_nr)/ (sum_dependency_col_overall + 1e-10);
                         
-        b(f_nr) = weight_f_col * max(1 - (1 + 0.1*iter_step)*weight_f_rand, 0);
+        b(f_nr) = weight_f_col * max(1 - (1 + 0.1*(iter_step - 1))*weight_f_rand, 0);
     end
 end
