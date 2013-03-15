@@ -7,7 +7,7 @@ function bin_import = validate_samples(bin_import, spp)
     hitpoints = bin_import(19:24,:); 
     invalid_values = hitpoints(:,:) > 10000 | hitpoints(:,:) < -10000;
     invalid_samples = any(invalid_values, 1);
-    fprintf('Need to fix %d samples \n', sum(invalid_samples == 1));
+    fprintf('Need to fix %d samples... ', sum(invalid_samples == 1));
     for i = 1:spp:length(bin_import)
         %fix if there is something to fix
         samples_idx = i + (0:7);
@@ -22,6 +22,7 @@ function bin_import = validate_samples(bin_import, spp)
             bin_import(:, samples_idx) = all_samples;
         end
     end
+    fprintf('Done!\n');
     %% TODO: turn geometric normals into smooth normals?
     %% fill used information into sample buffer
 %     sample_buffer = struct('position', bin_import(1:2,:), ...

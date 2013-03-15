@@ -12,11 +12,11 @@ end
 rng(42);
 tic
 boxsizes=[55 35 17 7];
-%max_samples_factor = [.5 .5 .5 .5] % Sen
+%max_samples_factor = [0.5 0.5 0.5 0.5] % Sen
 max_samples_factor = [0.02, 0.04, 0.2, 0.5]; % for prototyping, jl
 for iter_step = 1:4
     boxsize = boxsizes(iter_step);
-    max_samples_box = boxsize^2*spp*max_samples_factor;
+    max_samples_box = round(boxsize^2*spp*max_samples_factor(iter_step));
     
     %iterate over every pixel
     nr_pixels = length(bin_import)/8;
