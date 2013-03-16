@@ -24,6 +24,13 @@ function bin_import = validate_samples(bin_import, spp)
     end
     fprintf('Done!\n');
     %% TODO: turn geometric normals into smooth normals?
+%     smoothed_normals = zeros(3, length(bin_import));
+%     
+%     for i=1:length(bin_import)
+%        xy = bin_import(1:2, i);
+%        normal = bin_import(13:15, i); 
+%     end
+%     
     %% fill used information into sample buffer
 %     sample_buffer = struct('position', bin_import(1:2,:), ...
 %                        'lens_pos', bin_import(4:5,:), ...
