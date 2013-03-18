@@ -16,10 +16,14 @@ function bin_import = validate_samples(bin_import, spp)
             all_samples = bin_import(:, samples_idx);
             valid_samples = all_samples(:, ~pixel_invalid_samples);
             nr_invalid_samples = spp - size(valid_samples, 2);
-            all_samples(:, pixel_invalid_samples) = repmat(mean(valid_samples, 2), [1, nr_invalid_samples]);
-            % make radiance black 
-            all_samples(7:9, pixel_invalid_samples) = repmat([0;0;0], [1, nr_invalid_samples]);
-            bin_import(:, samples_idx) = all_samples;
+            if (nr_invalid_samples == spp)
+                bin_import(:, samples_idx) = zeros(size(bin_import, 1), spp);
+            else
+                all_samples(:, pixel_invalid_samples) = repmat(mean(valid_samples, 2), [1, nr_invalid_samples]);
+                % make radiance black 
+                all_samples(7:9, pixel_invalid_samples) = repmat([0;0;0], [1, nr_invalid_samples]);
+                bin_import(:, samples_idx) = all_samples;
+            end
         end
     end
     fprintf('Done!\n');

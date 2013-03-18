@@ -1,15 +1,15 @@
 [bin_import, spp] = read_binary();
+bin_import = validate_samples(bin_import, spp);
 
 %initializes random generator
-rng(42);
+%rng(42);
 boxsizes=[55 35 17 7];
-for iter_step = 1
-    tic
+for iter_step = 1:4
     boxsize = boxsizes(iter_step);
     max_samples_box = boxsize^2*spp/2;
     
     %% get neighbourhood of inspected pixel:
-    inspected_pos = [173, 620 - 298];
+    inspected_pos = [14, 619 - 20];
     
     inspected_pos_idx = getIndexByPosition(inspected_pos, spp, 362);
     
@@ -26,5 +26,5 @@ for iter_step = 1
     end
     [x, y] = getPositionByIndex(inspected_pos_idx, size(img,2), spp);
     img(y + 1, x + 1, 1) = 0;
-    exrwrite(img, 'neighbourhood.exr');
+    exrwrite(img, ['neighbourhood' num2str(iter_step) '.exr']);
 end
