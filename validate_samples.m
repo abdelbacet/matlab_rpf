@@ -42,23 +42,20 @@ function bin_import = validate_samples(bin_import, spp)
            for dy = -2:2
                sxy = xy + [dx; dy];
                if all(sxy >= [0; 0] & sxy < [362; 620])
-                   idx = getIndexByPosition(sxy, spp, 362);
-                   for j = 0:7
-                       % for spatial loc
-                       idx_j = idx + j;
-                       xy_j = bin_import(1:2, idx_j);
-                       xy_dist2 = sum((xy_i - xy_j).^2);
-                       d = xy_dist2/weighted_xy_var;
-                       
-                       % for normal
-                       normal_j = bin_import(13:15, idx_j);
-                       normal_dist2 = sum((normal_i - normal_j).^2);
-                       d = d + normal_dist2/weighted_n_var;
-                       
-                       % combine
-                       weight = exp(-d);
-                       smoothed_normals = weight*[normal_j; 1];
-                   end
+                   idx_j = getIndexByPosition(sxy, spp, 362) + (0:7);
+                   % for spatial loc
+                   xy_j = bin_import(1:2, idx_j);
+                   xy_dist2 = sum(bsxfun(@minus, xy_j, xy_i).^2);
+                   d = xy_dist2./weighted_xy_var;
+
+                   % for normal
+                   normal_j = bin_import(13:15, idx_j);
+                   normal_dist2 = sum(bsxfun(@minus, normal_j, normal_i).^2);
+                   d = d + normal_dist2./weighted_n_var;
+
+                   % combine
+                   weight = exp(-d);
+                   smoothed_normals(:, idx_i) = sum(bsxfun(@times, [normal_j; ones(1, spp)], weight), 2);
                end
            end
        end
