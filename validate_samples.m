@@ -8,9 +8,9 @@ function bin_import = validate_samples(bin_import, spp)
     invalid_values = hitpoints(:,:) > 10000 | hitpoints(:,:) < -10000;
     invalid_samples = any(invalid_values, 1);
     fprintf('Need to fix %d samples... ', sum(invalid_samples == 1));
-    for i = 1:spp:length(bin_import)
+    for idx_i = 1:spp:length(bin_import)
         %fix if there is something to fix
-        samples_idx = i + (0:7);
+        samples_idx = idx_i + (0:7);
         pixel_invalid_samples = invalid_samples(samples_idx);
         if any(pixel_invalid_samples)
             all_samples = bin_import(:, samples_idx);
@@ -28,12 +28,44 @@ function bin_import = validate_samples(bin_import, spp)
     end
     fprintf('Done!\n');
     %% TODO: turn geometric normals into smooth normals?
-%     smoothed_normals = zeros(3, length(bin_import));
-%     
-%     for i=1:length(bin_import)
-%        xy = bin_import(1:2, i);
-%        normal = bin_import(13:15, i); 
-%     end
+    smoothed_normals = zeros(4, length(bin_import));
+    fw = 5; %size of patch to look at for smoothing
+    normal_std = 0.5;
+    weighted_n_var = 2*normal_std^2;
+    xy_std = fw/2/2;
+    weighted_xy_var = 2*xy_std^2;
+    for idx_i=1:length(bin_import)
+       xy_i = bin_import(1:2, idx_i);
+       xy = floor(xy_i);
+       normal_i = bin_import(13:15, idx_i);
+       for dx = -2:2
+           for dy = -2:2
+               sxy = xy + [dx; dy];
+               if all(sxy >= [0; 0] & sxy < [362; 620])
+                   idx = getIndexByPosition(sxy, spp, 362);
+                   for j = 0:7
+                       % for spatial loc
+                       idx_j = idx + j;
+                       xy_j = bin_import(1:2, idx_j);
+                       xy_dist2 = sum((xy_i - xy_j).^2);
+                       d = xy_dist2/weighted_xy_var;
+                       
+                       % for normal
+                       normal_j = bin_import(13:15, idx_j);
+                       normal_dist2 = sum((normal_i - normal_j).^2);
+                       d = d + normal_dist2/weighted_n_var;
+                       
+                       % combine
+                       weight = exp(-d);
+                       smoothed_normals = weight*[normal_j; 1];
+                   end
+               end
+           end
+       end
+    end
+    % normalize all 
+    normalized_normals = bsxfun(@rdivide, smoothed_normals(1:3, :), smoothed_normals(4,:));
+    bin_import(13:15) = normalized_normals;
 %     
     %% fill used information into sample buffer
 %     sample_buffer = struct('position', bin_import(1:2,:), ...
