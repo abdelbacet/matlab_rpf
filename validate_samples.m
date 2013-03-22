@@ -34,35 +34,40 @@ function bin_import = validate_samples(bin_import, spp)
     weighted_n_var = 2*normal_std^2;
     xy_std = fw/2/2;
     weighted_xy_var = 2*xy_std^2;
-    for idx_i=1:length(bin_import)
+    neighbourhood = [-2:2, -2:2, -2:2, -2:2, -2:2
+      repmat(-2, [1 5]), repmat(-1, [1 5]), zeros([1 5]), ones([1 5]), repmat(2, [1 5])];
+    fprintf('Smoothing normals... ');
+    for idx_i=1:length(bin_import);
+        
+       % TODO: make neighbourhood crap only once every 8 pixels
        xy_i = bin_import(1:2, idx_i);
        xy = floor(xy_i);
        normal_i = bin_import(13:15, idx_i);
-       for dx = -2:2
-           for dy = -2:2
-               sxy = xy + [dx; dy];
-               if all(sxy >= [0; 0] & sxy < [362; 620])
-                   idx_j = getIndexByPosition(sxy, spp, 362) + (0:7);
-                   % for spatial loc
-                   xy_j = bin_import(1:2, idx_j);
-                   xy_dist2 = sum(bsxfun(@minus, xy_j, xy_i).^2);
-                   d = xy_dist2./weighted_xy_var;
+       sxy = bsxfun(@plus, neighbourhood, xy);
+       valid_sxy = all(bsxfun(@ge, sxy, [0; 0]) & bsxfun(@lt, sxy, [362; 620]));
+       sxy = sxy(:, valid_sxy);
+       idx_j = sxy(1,:) + 362*sxy(2,:);
+       idx_j = idx_j*spp + 1;
+       idx_j_samples = cell2mat(arrayfun(@(x) x + (0:7), idx_j, 'UniformOutput', false));
+       
+       % for spatial loc
+       xy_j = bin_import(1:2, idx_j_samples);
+       xy_dist2 = sum(bsxfun(@minus, xy_j, xy_i).^2);
+       d = xy_dist2./weighted_xy_var;
 
-                   % for normal
-                   normal_j = bin_import(13:15, idx_j);
-                   normal_dist2 = sum(bsxfun(@minus, normal_j, normal_i).^2);
-                   d = d + normal_dist2./weighted_n_var;
+       % for normal
+       normal_j = bin_import(13:15, idx_j_samples);
+       normal_dist2 = sum(bsxfun(@minus, normal_j, normal_i).^2);
+       d = d + normal_dist2./weighted_n_var;
 
-                   % combine
-                   weight = exp(-d);
-                   smoothed_normals(:, idx_i) = sum(bsxfun(@times, [normal_j; ones(1, spp)], weight), 2);
-               end
-           end
-       end
+       % combine
+       weight = exp(-d);
+       smoothed_normals(:, idx_i) = sum(bsxfun(@times, [normal_j; ones(1, length(normal_j))], weight), 2);
     end
     % normalize all 
     normalized_normals = bsxfun(@rdivide, smoothed_normals(1:3, :), smoothed_normals(4,:));
-    bin_import(13:15) = normalized_normals;
+    bin_import(13:15, :) = normalized_normals;
+    fprintf('Done!\n');
 %     
     %% fill used information into sample buffer
 %     sample_buffer = struct('position', bin_import(1:2,:), ...
