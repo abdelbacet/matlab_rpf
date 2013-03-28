@@ -1,13 +1,15 @@
 % Starts the random parameter filtering algorithm
 
-version = '1.2.9';
+version = '1.3.0';
 [bin_import, spp] = read_binary();
 img_width = 362;
-bin_import = validate_samples(bin_import, spp);
 
 if matlabpool('size') == 0
     matlabpool open
 end
+
+bin_import = validate_samples(bin_import, spp);
+
 %progress = waitbar(0, 'zomfg..');
 %initializes random generator
 rng(42);
