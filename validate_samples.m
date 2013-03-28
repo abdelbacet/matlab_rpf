@@ -27,7 +27,7 @@ function bin_import = validate_samples(bin_import, spp)
         end
     end
     fprintf('Done!\n');
-    %% TODO: turn geometric normals into smooth normals?
+    %% turn geometric normals into smooth normals
     smoothed_normals = zeros(4, length(bin_import));
     fw = 5; %size of patch to look at for smoothing
     normal_std = 0.5;
@@ -37,7 +37,8 @@ function bin_import = validate_samples(bin_import, spp)
     neighbourhood = [-2:2, -2:2, -2:2, -2:2, -2:2
       repmat(-2, [1 5]), repmat(-1, [1 5]), zeros([1 5]), ones([1 5]), repmat(2, [1 5])];
     fprintf('Smoothing normals... ');
-    for idx_i=1:length(bin_import);
+    tic
+    parfor idx_i=1:length(bin_import);
         
        % TODO: make neighbourhood crap only once every 8 pixels
        xy_i = bin_import(1:2, idx_i);
@@ -68,6 +69,7 @@ function bin_import = validate_samples(bin_import, spp)
     normalized_normals = bsxfun(@rdivide, smoothed_normals(1:3, :), smoothed_normals(4,:));
     bin_import(13:15, :) = normalized_normals;
     fprintf('Done!\n');
+    toc
 %     
     %% fill used information into sample buffer
 %     sample_buffer = struct('position', bin_import(1:2,:), ...
