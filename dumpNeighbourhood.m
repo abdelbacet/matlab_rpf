@@ -4,12 +4,14 @@ bin_import = validate_samples(bin_import, spp);
 %initializes random generator
 %rng(42);
 boxsizes=[55 35 17 7];
-for iter_step = 1:4
+max_samples_factor = [0.02, 0.04, 0.2, 0.5]; % for prototyping, jl
+%max_samples_factor = [0.5 0.5 0.5 0.5] % Sen
+for iter_step = 1
     boxsize = boxsizes(iter_step);
-    max_samples_box = boxsize^2*spp/2;
+    max_samples_box = boxsize^2*spp*max_samples_factor(iter_step);
     
     %% get neighbourhood of inspected pixel:
-    inspected_pos = [14, 619 - 20];
+    inspected_pos = [173, 337];
     
     inspected_pos_idx = getIndexByPosition(inspected_pos, spp, 362);
     
@@ -26,5 +28,5 @@ for iter_step = 1:4
     end
     [x, y] = getPositionByIndex(inspected_pos_idx, size(img,2), spp);
     img(y + 1, x + 1, 1) = 0;
-    exrwrite(img, ['neighbourhood' num2str(iter_step) '.exr']);
+    exrwrite(img, ['neighbourhood_interesting.exr']);
 end
