@@ -69,7 +69,7 @@ function bin_import = validate_samples(bin_import, spp)
            weight = exp(-d);
            smoothed_normals_pixel(sample_nr + 1, :) = sum(bsxfun(@times, [normal_j; ones(1, length(normal_j))], weight), 2);
        end
-       smoothed_normals(pixel_nr, :, :) = smoothed_normals_pixel; 
+       smoothed_normals(pixel_nr + 1, :, :) = smoothed_normals_pixel; 
     end
     % normalize all 
     smoothed_normals = reshape(permute(smoothed_normals, [3 2 1]), 4, pixel_count*8);
