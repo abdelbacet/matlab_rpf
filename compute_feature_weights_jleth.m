@@ -1,4 +1,4 @@
-function [a, b, weights_col_rand] = compute_feature_weights_jleth(iter_step, N)
+function [a, b, W_r_c] = compute_feature_weights_jleth(iter_step, N)
 %Jleth's approach to compute feature weights
 %   Weights are not computed per color channel, but overall. This
 %   is supposed to reduce decoloring of the image.
