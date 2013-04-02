@@ -30,7 +30,7 @@ function [a, b, W_r_c] = compute_feature_weights_jleth(iter_step, N)
     m_D_fk_pl = zeros([size(N.features, 1), size(N.pos, 1)]);
     m_D_fk_cl = zeros([size(N.features, 1), size(N.color, 1)]);
     for k = 1:size(N.features, 1)
-        feature_info = N.feature(k,:);
+        feature_info = N.features(k,:);
         for l = 1:size(N.random_pars, 1)
             rl = N.random_pars(l, :);
             m_D_fk_rl(k, l) = mutualinfo(feature_info, rl);
@@ -63,7 +63,7 @@ function [a, b, W_r_c] = compute_feature_weights_jleth(iter_step, N)
     % in paper:
     % a = 1 - W_r_c;
     
-    b = zeros([1, size(N.features, 1)]);
+    b = zeros([size(N.features, 1), 1]);
     for k = 1:size(N.features, 1)
         D_fk_r = sum(m_D_fk_rl(k, :)); % kth feature vs random
         D_fk_p = sum(m_D_fk_pl(k, :)); % kth feature vs position
