@@ -22,15 +22,16 @@ function [neighbourhood, N] = preprocess_samples(bin_import, k, boxsize, max_sam
     mu = repmat(mean_position, [1, max_samples_box - spp]);
     sample_pos_array = round(normrnd(mu, standard_deviation));
     % todo: rework first if into various bsxfun/logical operators:
-    inside_img = all(bsxfun(@ge, sample_pos_array, [0,0]') & bsxfun(@lt, sample_pos_array, [362, 620]'), 1);
+    inside_img = all(bsxfun(@ge, sample_pos_array, [0;0]) & bsxfun(@lt, sample_pos_array, [362; 620]), 1);
     not_initial_pos = any(bsxfun(@ne, sample_pos_array, mean_position), 1);
     valid_sample_pos = sample_pos_array(:, inside_img & not_initial_pos);
-    % contains img_width
+    % contains img_width, works correct
     valid_sample_idxs = valid_sample_pos(1,:) + 362*valid_sample_pos(2,:);
     valid_sample_idxs = valid_sample_idxs*spp + 1;
     % samples might occur multiple times, but that's ok 
     % (importance sampling)
     valid_sample_idxs = valid_sample_idxs + randi([0, 7], size(valid_sample_idxs));
+    % unique could be left out, not much impact after @jl
     valid_sample_idxs = unique(valid_sample_idxs);
     feature_values = bin_import(idx_features, valid_sample_idxs);
     diff_features = abs(bsxfun(@minus, feature_values, means));
