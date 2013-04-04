@@ -34,12 +34,10 @@ function new_colors = filter_color_samples(bin_import, all_samples_pixel, neighb
     new_colors_mean = mean(new_colors, 2);
     % could introduce larger error margin like 2*std
     new_colors_std = std(new_colors,0,2); 
-    for i = 1:spp
-        new_colors_error = abs(bsxfun(@minus, new_colors, new_colors_mean));
-        outliers = any(bsxfun(@gt, new_colors_error, new_colors_std), 1);
-        new_colors(:,outliers) = repmat(new_colors_mean, [1, sum(outliers == 1)]);
-    end
-    
+    new_colors_error = abs(bsxfun(@minus, new_colors, new_colors_mean));
+    outliers = any(bsxfun(@gt, new_colors_error, new_colors_std), 1);
+    new_colors(:,outliers) = repmat(new_colors_mean, [1, sum(outliers == 1)]);
+
     %% Reinsert energy
     lost_energy_per_sample = new_colors_mean - mean(new_colors, 2);
     new_colors = bsxfun(@plus, new_colors, lost_energy_per_sample);
