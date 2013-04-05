@@ -17,8 +17,8 @@ tic
 boxsizes=[55 35 17 7];
 %max_samples_factor = [0.5 0.5 0.5 0.5] % Sen
 max_samples_factor = [0.02, 0.04, 0.2, 0.5]; % for prototyping, jl
-window_min = [100, 337];
-window_max = [200, 437];
+window_min = [50, 387];
+window_max = [150, 487];
 idx_min = getIndexByPosition(window_min, 1, img_width);
 idx_max = getIndexByPosition(window_max, 1, img_width);
 
