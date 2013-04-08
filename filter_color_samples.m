@@ -1,4 +1,4 @@
-function new_colors = filter_color_samples(bin_import, all_samples_pixel, neighbourhood, a, b, weights_col_rand, spp)
+function new_colors = filter_color_samples(neighbourhood, a, b, weights_col_rand, spp)
     sum_weights_col_rand = sum(weights_col_rand)/3;
     
     init_variance = 0.02; % indoor
@@ -12,14 +12,13 @@ function new_colors = filter_color_samples(bin_import, all_samples_pixel, neighb
     scale_f = -1/(2*variance_feature);
         
     new_colors = zeros(3,spp);
-    current_pixel = makeStruct(bin_import, all_samples_pixel);
-    % todo: use samples_struct instead of other stuff
+
     for i=1:spp
-        squared_error_color = bsxfun(@minus, neighbourhood.color, current_pixel.color(:,i)).^2;
+        squared_error_color = bsxfun(@minus, neighbourhood.color, neighbourhood.color(:,i)).^2;
         weighted_error_color = bsxfun(@times, squared_error_color, a);
         sum_wec = sum(weighted_error_color);
         
-        squarred_error_features = bsxfun(@minus, neighbourhood.features, current_pixel.features(:,i)).^2;
+        squarred_error_features = bsxfun(@minus, neighbourhood.features, neighbourhood.features(:,i)).^2;
         weighted_error_features = bsxfun(@times, squarred_error_features, b);
         sum_wef = sum(weighted_error_features);
         

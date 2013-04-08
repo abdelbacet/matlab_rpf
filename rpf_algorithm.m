@@ -33,11 +33,11 @@ for iter_step = 1:4
     nr_pixels = length(bin_import)/8;
     %new_colors = zeros(3, length(bin_import));
     new_colors = zeros(length(bin_import)/8, 3, 8);
-    parfor i = 1:nr_pixels
+    parfor i = window_min:window_max
         all_samples_pixel = (i-1)*8+(1:8);
         neighbourhood = preprocess_samples(bin_import, all_samples_pixel, boxsize, max_samples_box, spp);
         [a, b, weights_col_rand] = compute_feature_weights(iter_step, neighbourhood);
-        new_colors(i,:,:) = filter_color_samples(bin_import, all_samples_pixel, neighbourhood, a, b, weights_col_rand, spp);
+        new_colors(i,:,:) = filter_color_samples(neighbourhood, a, b, weights_col_rand, spp);
     end
     
     % write new_colors back into bin_import 
