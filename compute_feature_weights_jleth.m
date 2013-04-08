@@ -63,6 +63,14 @@ function [a, b, W_r_c] = compute_feature_weights_jleth(iter_step, N)
     % in paper:
     % a = 1 - W_r_c;
     
+    %% For comparing with jleth:
+%     disp(D_r_c/D_a_c)
+%     disp(D_p_c/D_a_c)
+%     disp(D_f_c/D_a_c)
+%     disp(W_r_c)
+%     disp(a)
+    
+    %% Compute beta by summing up over results
     b = zeros([size(N.features, 1), 1]);
     for k = 1:size(N.features, 1)
         D_fk_r = sum(m_D_fk_rl(k, :)); % kth feature vs random

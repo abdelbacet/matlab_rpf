@@ -10,7 +10,8 @@ function out = makeStruct(bin_import, N)
                     'features', [   bin_import(13:24, N); ...
                                 	bin_import(28:30, N)], ...
                     'random_pars', [ bin_import(4:5, N); ... lens pos
-                                     normc(bin_import(22:24, N) - bin_import(19:21, N)]) ); % first reflection dir
+                                     normc(bin_import(22:24, N) - bin_import(19:21, N))]); % first reflection dir
+                                 % TODO: precompute reflection dir once
     
     %% Print neighbourhood positions for debugging purposes
 %     neighb_mat_pos = bsxfun(@minus, floor(out.pos), floor(out.pos(:, 1)) - [27; 27]);

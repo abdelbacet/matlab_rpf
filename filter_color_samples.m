@@ -17,6 +17,7 @@ function new_colors = filter_color_samples(bin_import, all_samples_pixel, neighb
     % todo: use samples_struct instead of other stuff
     for i=1:spp
         squared_error_color = bsxfun(@minus, neighbourhood.color, current_pixel.color(:,i)).^2;
+        % Essential: use same alpha for every color channel
         weighted_error_color =  squared_error_color.*a;
         sum_wec = sum(weighted_error_color);
         
@@ -31,14 +32,15 @@ function new_colors = filter_color_samples(bin_import, all_samples_pixel, neighb
     end
     
     %% HDR clamp
-    new_colors_mean = mean(new_colors, 2);
-    % could introduce larger error margin like 2*std
+    new_colors_mean_before = mean(new_colors, 2);
     new_colors_std = std(new_colors,0,2); 
-    new_colors_error = abs(bsxfun(@minus, new_colors, new_colors_mean));
+    new_colors_error = abs(bsxfun(@minus, new_colors, new_colors_mean_before));
+    
+    % could introduce larger error margin like 2*std
     outliers = any(bsxfun(@gt, new_colors_error, new_colors_std), 1);
-    new_colors(:,outliers) = repmat(new_colors_mean, [1, sum(outliers == 1)]);
+    new_colors(:,outliers) = repmat(new_colors_mean_before, [1, sum(outliers)]);
 
-    %% Reinsert energy
-    lost_energy_per_sample = new_colors_mean - mean(new_colors, 2);
+    %% Reinsert energy lost from HDR clamp
+    lost_energy_per_sample = new_colors_mean_before - mean(new_colors, 2);
     new_colors = bsxfun(@plus, new_colors, lost_energy_per_sample);
 end
