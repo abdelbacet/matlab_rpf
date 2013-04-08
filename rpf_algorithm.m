@@ -47,15 +47,19 @@ for iter_step = 1:4
         end
         neighbourhood = preprocess_samples(bin_import, all_samples_pixel, boxsize, max_samples_box, spp);
         [a, b, weights_col_rand] = compute_feature_weights_jleth(iter_step, neighbourhood);
+        debug_pixel = false;
         if (i == idx_inspected_pixel)
-            fprintf('alpha: \n');
-            disp(a);
-            fprintf('beta: \n');
-            disp(b);
-            fprintf('W_r_c: \n');
-            disp(weights_col_rand);
+%             fprintf('pos: \n');
+%             disp(bin_import(1:2, all_samples_pixel(1))');
+%             fprintf('alpha: \n');
+%             disp(a);
+%             fprintf('beta: \n');
+%             disp(b);
+%             fprintf('W_r_c: \n');
+%             disp(weights_col_rand);
+            debug_pixel = true;
         end
-        new_colors(i,:,:) = filter_color_samples(bin_import, all_samples_pixel, neighbourhood, a, b, weights_col_rand, spp);
+        new_colors(i,:,:) = filter_color_samples(bin_import, all_samples_pixel, neighbourhood, a, b, weights_col_rand, spp, debug_pixel, iter_step);
     end
     
     % write new_colors back into bin_import 

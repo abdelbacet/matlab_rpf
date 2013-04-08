@@ -1,4 +1,4 @@
-function new_colors = filter_color_samples(bin_import, all_samples_pixel, neighbourhood, a, b, weights_col_rand, spp)
+function [new_colors_pixel, debug_weights] = filter_color_samples(bin_import, all_samples_pixel, neighbourhood, a, b, weights_col_rand, spp, debug_pixel, iter_step)
     sum_weights_col_rand = weights_col_rand;
     
     init_variance = 0.02; % indoor
@@ -12,9 +12,10 @@ function new_colors = filter_color_samples(bin_import, all_samples_pixel, neighb
     scale_c = -(1-sum_weights_col_rand)^2/(2*variance_color);
     scale_f = -(1-sum_weights_col_rand)^2/(2*variance_feature);
         
-    new_colors = zeros(3,spp);
+    new_colors_pixel = zeros(3,spp);
     current_pixel = makeStruct(bin_import, all_samples_pixel);
     % todo: use samples_struct instead of other stuff
+    debug_weights = zeros(1, length(neighbourhood.color));
     for i=1:spp
         squared_error_color = bsxfun(@minus, neighbourhood.color, current_pixel.color(:,i)).^2;
         % Essential: use same alpha for every color channel
@@ -25,22 +26,35 @@ function new_colors = filter_color_samples(bin_import, all_samples_pixel, neighb
         weighted_error_features = bsxfun(@times, squarred_error_features, b);
         sum_wef = sum(weighted_error_features);
         
-        relative_weights =    exp(scale_c*sum_wec + scale_f*sum_wef);
-       
-        new_colors(:,i) = sum(bsxfun(@times, neighbourhood.color_unnormed, relative_weights),2)./ ...
+        relative_weights = exp(scale_c*sum_wec + scale_f*sum_wef);
+        if (debug_pixel)
+            debug_weights = debug_weights + relative_weights;
+        end
+        new_colors_pixel(:,i) = sum(bsxfun(@times, neighbourhood.color_unnormed, relative_weights),2)./ ...
                                                         sum(relative_weights); 
     end
     
+    %% Debug: print weights
+    if (debug_pixel)
+        fprintf('printing weights of debug pixel...');
+        img = zeros(620, 362, 3);
+        for i=1:length(debug_weights)
+            pos = neighbourhood.pos_unnormed(:, i);
+            img(pos(2) + 1, pos(1) + 1, :) = repmat(debug_weights(i), 3, 1);
+        end
+        exrwrite(img, ['relative_weights_debug_pixel' num2str(iter_step) '.exr']);
+        fprintf('done! \n');
+    end
     %% HDR clamp
-    new_colors_mean_before = mean(new_colors, 2);
-    new_colors_std = std(new_colors,0,2); 
-    new_colors_error = abs(bsxfun(@minus, new_colors, new_colors_mean_before));
+    new_colors_mean_before = mean(new_colors_pixel, 2);
+    new_colors_std = std(new_colors_pixel, 0, 2); 
+    new_colors_error = abs(bsxfun(@minus, new_colors_pixel, new_colors_mean_before));
     
     % could introduce larger error margin like 2*std
     outliers = any(bsxfun(@gt, new_colors_error, new_colors_std), 1);
-    new_colors(:,outliers) = repmat(new_colors_mean_before, [1, sum(outliers)]);
+    new_colors_pixel(:,outliers) = repmat(new_colors_mean_before, [1, sum(outliers)]);
 
     %% Reinsert energy lost from HDR clamp
-    lost_energy_per_sample = new_colors_mean_before - mean(new_colors, 2);
-    new_colors = bsxfun(@plus, new_colors, lost_energy_per_sample);
+    lost_energy_per_sample = new_colors_mean_before - mean(new_colors_pixel, 2);
+    new_colors_pixel = bsxfun(@plus, new_colors_pixel, lost_energy_per_sample);
 end
