@@ -15,13 +15,17 @@ end
 rng(42);
 tic
 boxsizes=[55 35 17 7];
-%max_samples_factor = [0.5 0.5 0.5 0.5] % Sen
-max_samples_factor = [0.02, 0.04, 0.2, 0.5]; % for prototyping, jl
+max_samples_factor = [0.5 0.5 0.5 0.5]; % Sen
+%max_samples_factor = [0.02, 0.04, 0.2, 0.5]; % for prototyping, jl
+
+%% Specify debug window
 inspected_pixel = [173; 337];
-window_min = inspected_pixel - [50; 50];
-window_max = inspected_pixel + [50; 50];
+window_min = inspected_pixel - 60;
+%window_min = inspected_pixel;
+window_max = inspected_pixel + 60;
 idx_min = getIndexByPosition(window_min, 1, img_width);
 idx_max = getIndexByPosition(window_max, 1, img_width);
+idx_inspected_pixel = getIndexByPosition(inspected_pixel, 1, img_width);
 
 %% Compute initial energy
 initial_energy = sum(sum(bsxfun(@times, bin_import(7:9, :), [.3; .59; .11;])));
@@ -43,6 +47,14 @@ for iter_step = 1:4
         end
         neighbourhood = preprocess_samples(bin_import, all_samples_pixel, boxsize, max_samples_box, spp);
         [a, b, weights_col_rand] = compute_feature_weights_jleth(iter_step, neighbourhood);
+        if (i == idx_inspected_pixel)
+            fprintf('alpha: \n');
+            disp(a);
+            fprintf('beta: \n');
+            disp(b);
+            fprintf('W_r_c: \n');
+            disp(weights_col_rand);
+        end
         new_colors(i,:,:) = filter_color_samples(bin_import, all_samples_pixel, neighbourhood, a, b, weights_col_rand, spp);
     end
     
@@ -51,7 +63,7 @@ for iter_step = 1:4
     new_colors = permute(new_colors, [2 3 1]);
     bin_import(7:9, :) = reshape(new_colors, 3, []);
     fprintf('finished iteration step! \n');
-    img = print_img(bin_import, ['iter_' num2str(iter_step) '_v' version '_npc'], spp);
+    img = print_img(bin_import, ['iter_' num2str(iter_step) '_' version '_npc_sen_factor'], spp);
 end
 
 final_energy = sum(sum(bsxfun(@times, bin_import(7:9, :), [.3; .59; .11;])));
