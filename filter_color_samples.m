@@ -1,4 +1,4 @@
-function [new_colors_pixel, debug_weights] = filter_color_samples(neighbourhood, a, b, weights_col_rand, spp, debug_pixel, iter_step)
+function new_colors = filter_color_samples(bin_import, all_samples_pixel, neighbourhood, a, b, weights_col_rand, spp)
     sum_weights_col_rand = weights_col_rand;
     
     init_variance = 0.02; % indoor
