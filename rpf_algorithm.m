@@ -1,14 +1,14 @@
 % Starts the random parameter filtering algorithm
 
 version = '1.3.0';
-[bin_import, spp] = read_binary();
+% [bin_import, spp] = read_binary();
 img_width = 362;
 
 if matlabpool('size') == 0
     matlabpool open
 end
 
-bin_import = validate_samples(bin_import, spp);
+% bin_import = validate_samples(bin_import, spp);
 
 %progress = waitbar(0, 'zomfg..');
 %initializes random generator
@@ -33,7 +33,7 @@ for iter_step = 1:4
     nr_pixels = length(bin_import)/8;
     %new_colors = zeros(3, length(bin_import));
     new_colors = zeros(length(bin_import)/8, 3, 8);
-    parfor i = window_min:window_max
+    parfor i = idx_min:idx_max
         all_samples_pixel = (i-1)*8+(1:8);
         neighbourhood = preprocess_samples(bin_import, all_samples_pixel, boxsize, max_samples_box, spp);
         [a, b, weights_col_rand] = compute_feature_weights(iter_step, neighbourhood);
