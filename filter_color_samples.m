@@ -1,4 +1,4 @@
-function [new_colors_pixel, debug_weights] = filter_color_samples(bin_import, all_samples_pixel, neighbourhood, a, b, weights_col_rand, spp, debug_pixel, iter_step)
+function [new_colors_pixel, debug_weights] = filter_color_samples(neighbourhood, a, b, weights_col_rand, spp, debug_pixel, iter_step)
     sum_weights_col_rand = weights_col_rand;
     
     init_variance = 0.02; % indoor
@@ -13,16 +13,17 @@ function [new_colors_pixel, debug_weights] = filter_color_samples(bin_import, al
     scale_f = -(1-sum_weights_col_rand)^2/(2*variance_feature);
         
     new_colors_pixel = zeros(3,spp);
-    current_pixel = makeStruct(bin_import, all_samples_pixel);
+    %current_pixel = makeStruct(bin_import, all_samples_pixel);
     % todo: use samples_struct instead of other stuff
     debug_weights = zeros(1, length(neighbourhood.color));
+    %% This assumes, that the first 8 samples of the neighbourhood are the samples of the current pixel
     for i=1:spp
-        squared_error_color = bsxfun(@minus, neighbourhood.color, current_pixel.color(:,i)).^2;
+        squared_error_color = bsxfun(@minus, neighbourhood.color, neighbourhood.color(:,i)).^2;
         % Essential: use same alpha for every color channel
         weighted_error_color =  squared_error_color.*a;
         sum_wec = sum(weighted_error_color);
         
-        squarred_error_features = bsxfun(@minus, neighbourhood.features, current_pixel.features(:,i)).^2;
+        squarred_error_features = bsxfun(@minus, neighbourhood.features, neighbourhood.features(:,i)).^2;
         weighted_error_features = bsxfun(@times, squarred_error_features, b);
         sum_wef = sum(weighted_error_features);
         

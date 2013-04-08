@@ -59,7 +59,7 @@ for iter_step = 1:4
 %             disp(weights_col_rand);
             debug_pixel = true;
         end
-        new_colors(i,:,:) = filter_color_samples(bin_import, all_samples_pixel, neighbourhood, a, b, weights_col_rand, spp, debug_pixel, iter_step);
+        new_colors(i,:,:) = filter_color_samples(neighbourhood, a, b, weights_col_rand, spp, debug_pixel, iter_step);
     end
     
     % write new_colors back into bin_import 
