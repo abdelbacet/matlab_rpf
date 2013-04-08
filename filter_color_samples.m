@@ -38,7 +38,7 @@ function [new_colors_pixel, debug_weights] = filter_color_samples(neighbourhood,
     %% Debug: print weights
     if (debug_pixel)
         fprintf('printing weights of debug pixel...');
-        img = zeros(620, 362, 3);
+        img = repmat(reshape([1 0 0], 1, 1, 3), [620, 362, 1]);
         for i=1:length(debug_weights)
             pos = neighbourhood.pos_unnormed(:, i);
             img(pos(2) + 1, pos(1) + 1, :) = repmat(debug_weights(i), 3, 1);
