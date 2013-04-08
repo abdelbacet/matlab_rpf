@@ -19,7 +19,7 @@ function [new_colors_pixel, debug_weights] = filter_color_samples(neighbourhood,
     %% This assumes, that the first 8 samples of the neighbourhood are the samples of the current pixel
     for i=1:spp
         squared_error_color = bsxfun(@minus, neighbourhood.color, neighbourhood.color(:,i)).^2;
-        % Essential: use same alpha for every color channel
+        % Essential: use same alpha for every color channel to prevent discoloring
         weighted_error_color =  squared_error_color.*a;
         sum_wec = sum(weighted_error_color);
         

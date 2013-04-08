@@ -15,8 +15,8 @@ end
 rng(42);
 tic
 boxsizes=[55 35 17 7];
-max_samples_factor = [0.5 0.5 0.5 0.5]; % Sen
-%max_samples_factor = [0.02, 0.04, 0.2, 0.5]; % for prototyping, jl
+%max_samples_factor = [0.5 0.5 0.5 0.5]; % Sen
+max_samples_factor = [0.02, 0.04, 0.2, 0.5]; % for prototyping, jl
 
 %% Specify debug window
 inspected_pixel = [173; 337];
@@ -39,6 +39,7 @@ for iter_step = 1:4
     %new_colors = zeros(3, length(bin_import));
     new_colors = zeros(length(bin_import)/8, 3, 8);
     % This is designed to run parallel!
+   
     parfor i = idx_min:idx_max 
         all_samples_pixel = (i-1)*8+(1:8);
         pixel_x = bin_import(1, all_samples_pixel(1));
@@ -49,14 +50,14 @@ for iter_step = 1:4
         [a, b, weights_col_rand] = compute_feature_weights_jleth(iter_step, neighbourhood);
         debug_pixel = false;
         if (i == idx_inspected_pixel)
-%             fprintf('pos: \n');
-%             disp(bin_import(1:2, all_samples_pixel(1))');
-%             fprintf('alpha: \n');
-%             disp(a);
-%             fprintf('beta: \n');
-%             disp(b);
-%             fprintf('W_r_c: \n');
-%             disp(weights_col_rand);
+            fprintf('pos: \n');
+            disp(bin_import(1:2, all_samples_pixel(1))');
+            fprintf('alpha: \n');
+            disp(a);
+            fprintf('beta: \n');
+            disp(b);
+            fprintf('W_r_c: \n');
+            disp(weights_col_rand);
             debug_pixel = true;
         end
         new_colors(i,:,:) = filter_color_samples(neighbourhood, a, b, weights_col_rand, spp, debug_pixel, iter_step);
@@ -66,12 +67,12 @@ for iter_step = 1:4
     % Some conversion is necessary due to parallel support of new_colors matrix
     new_colors = permute(new_colors, [2 3 1]);
     bin_import(7:9, :) = reshape(new_colors, 3, []);
-    fprintf('finished iteration step! \n');
+    fprintf('finished iteration step %d ! \n', iter_step);
     img = print_img(bin_import, ['iter_' num2str(iter_step) '_' version '_npc_sen_factor'], spp);
 end
 
 final_energy = sum(sum(bsxfun(@times, bin_import(7:9, :), [.3; .59; .11;])));
-fprintf('Lost %d percent energy', 100*(1 - final_energy/initial_energy));
+fprintf('Lost %d percent energy \n', 100*(1 - final_energy/initial_energy));
 
 
 toc
