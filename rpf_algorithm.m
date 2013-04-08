@@ -68,7 +68,7 @@ for iter_step = 1:4
     new_colors = permute(new_colors, [2 3 1]);
     bin_import(7:9, :) = reshape(new_colors, 3, []);
     fprintf('finished iteration step %d ! \n', iter_step);
-    img = print_img(bin_import, ['iter_' num2str(iter_step) '_' version '_npc_sen_factor'], spp);
+    img = print_img(bin_import, ['iter_' num2str(iter_step) '_' version '_npc_jlet_factor'], spp);
 end
 
 final_energy = sum(sum(bsxfun(@times, bin_import(7:9, :), [.3; .59; .11;])));
