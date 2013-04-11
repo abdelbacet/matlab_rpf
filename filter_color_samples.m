@@ -19,17 +19,21 @@ function new_colors = filter_color_samples(bin_import, all_samples_pixel, neighb
     %% This assumes, that the first 8 samples of the neighbourhood are the samples of the current pixel
     for i=1:spp
         squared_error_color = bsxfun(@minus, neighbourhood.color, neighbourhood.color(:,i)).^2;
-        % Essential: use same alpha for every color channel
+        % Essential: use same alpha for every color channel to prevent discoloring
         weighted_error_color =  squared_error_color.*a;
-        sum_wec = sum(weighted_error_color);
+        sum_wec = sum(weighted_error_color, 1);
         
         squarred_error_features = bsxfun(@minus, neighbourhood.features, neighbourhood.features(:,i)).^2;
         weighted_error_features = bsxfun(@times, squarred_error_features, b);
-        sum_wef = sum(weighted_error_features);
+        sum_wef = sum(weighted_error_features, 1);
         
         relative_weights = exp(scale_c*sum_wec + scale_f*sum_wef);
         if (debug_pixel)
             debug_weights = debug_weights + relative_weights;
+%             fprintf('squared error color: \n')
+%             disp(squared_error_color(:, 1:14));
+%             fprintf('weighted error features: \n')
+%             disp(squarred_error_features(:, 1:14));
         end
         new_colors_pixel(:,i) = sum(bsxfun(@times, neighbourhood.color_unnormed, relative_weights),2)./ ...
                                                         sum(relative_weights); 
@@ -38,10 +42,16 @@ function new_colors = filter_color_samples(bin_import, all_samples_pixel, neighb
     %% Debug: print weights
     if (debug_pixel)
         fprintf('printing weights of debug pixel...');
+        % initialize red
         img = repmat(reshape([1 0 0], 1, 1, 3), [620, 362, 1]);
+        % replace red with weight (grayscale) if available
         for i=1:length(debug_weights)
             pos = neighbourhood.pos_unnormed(:, i);
-            img(pos(2) + 1, pos(1) + 1, :) = repmat(debug_weights(i), 3, 1);
+            before = reshape(img(pos(2) + 1, pos(1) + 1, :), 3, 1);
+            if (before == [1;0;0])
+                before = zeros(3, 1);
+            end
+            img(pos(2) + 1, pos(1) + 1, :) = before + repmat(debug_weights(i), 3, 1);
         end
         exrwrite(img, ['relative_weights_debug_pixel' num2str(iter_step) '.exr']);
         fprintf('done! \n');
