@@ -26,14 +26,18 @@ function new_colors_pixel = filter_color_samples(neighbourhood, a, b, weights_co
         weighted_error_features = bsxfun(@times, squarred_error_features, b);
         sum_wef = sum(weighted_error_features, 1);
         
+        % seems like the problem are very high values of sum_wec after the 
+        % first pass.... does somewhere go something wrong during the first
+        % pass?
         relative_weights = exp(scale_c*sum_wec + scale_f*sum_wef);
         if (debug_pixel)
             debug_weights = debug_weights + relative_weights;
             if (i == 1)
-                fprintf('squared error color: \n')
-                disp(squared_error_color(:, 1:14));
+                fprintf('sum wec: \n')
+                disp(sum_wec(1:14));
                 fprintf('weighted error features: \n')
-                disp(squarred_error_features(:, 1:14));
+                disp(sum_wef(1:14));
+                fprintf('resulting relative weights: \n')
             end
         end
         new_colors_pixel(:,i) = sum(bsxfun(@times, neighbourhood.color_unnormed, relative_weights),2)./ ...
@@ -41,7 +45,7 @@ function new_colors_pixel = filter_color_samples(neighbourhood, a, b, weights_co
     end
     
     %% Debug: print weights
-    if (debug_pixel)
+    if (debug_pixel || any(any(new_colors_pixel < 0)))
         fprintf('printing weights of debug pixel (overall %d)... ', sum(debug_weights));
         % initialize red
         img = repmat(reshape([1 0 0], 1, 1, 3), [620, 362, 1]);

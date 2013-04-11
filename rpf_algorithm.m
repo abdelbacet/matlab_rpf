@@ -1,14 +1,18 @@
 % Starts the random parameter filtering algorithm
 
 version = '1.4.3';
-%[bin_import, spp] = read_binary();
 img_width = 362;
 
 if matlabpool('size') == 0
     matlabpool open
 end
 
+%[bin_import, spp] = read_binary();
 %bin_import = validate_samples(bin_import, spp);
+
+% faster: load from existing matlab space, no validation needed
+load('validated_bin_import.mat', 'bin_import')
+load('validated_bin_import.mat', 'spp')
 
 %progress = waitbar(0, 'zomfg..');
 %initializes random generator
