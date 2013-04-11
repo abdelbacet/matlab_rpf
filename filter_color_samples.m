@@ -14,7 +14,6 @@ function new_colors_pixel = filter_color_samples(neighbourhood, a, b, weights_co
         
     new_colors_pixel = zeros(3,spp);
     %current_pixel = makeStruct(bin_import, all_samples_pixel);
-    % todo: use samples_struct instead of other stuff
     debug_weights = zeros(1, length(neighbourhood.color));
     %% This assumes, that the first 8 samples of the neighbourhood are the samples of the current pixel
     for i=1:spp
@@ -30,10 +29,12 @@ function new_colors_pixel = filter_color_samples(neighbourhood, a, b, weights_co
         relative_weights = exp(scale_c*sum_wec + scale_f*sum_wef);
         if (debug_pixel)
             debug_weights = debug_weights + relative_weights;
-%             fprintf('squared error color: \n')
-%             disp(squared_error_color(:, 1:14));
-%             fprintf('weighted error features: \n')
-%             disp(squarred_error_features(:, 1:14));
+            if (i == 1)
+                fprintf('squared error color: \n')
+                disp(squared_error_color(:, 1:14));
+                fprintf('weighted error features: \n')
+                disp(squarred_error_features(:, 1:14));
+            end
         end
         new_colors_pixel(:,i) = sum(bsxfun(@times, neighbourhood.color_unnormed, relative_weights),2)./ ...
                                                         sum(relative_weights); 
@@ -41,7 +42,7 @@ function new_colors_pixel = filter_color_samples(neighbourhood, a, b, weights_co
     
     %% Debug: print weights
     if (debug_pixel)
-        fprintf('printing weights of debug pixel...');
+        fprintf('printing weights of debug pixel (overall %d)... ', sum(debug_weights));
         % initialize red
         img = repmat(reshape([1 0 0], 1, 1, 3), [620, 362, 1]);
         % replace red with weight (grayscale) if available
