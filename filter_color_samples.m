@@ -30,7 +30,10 @@ function [new_colors_pixel, debug_weights] = filter_color_samples(neighbourhood,
         relative_weights = exp(scale_c*sum_wec + scale_f*sum_wef);
         if (debug_pixel)
             debug_weights = debug_weights + relative_weights;
-            
+%             fprintf('squared error color: \n')
+%             disp(squared_error_color(:, 1:14));
+%             fprintf('weighted error features: \n')
+%             disp(squarred_error_features(:, 1:14));
         end
         new_colors_pixel(:,i) = sum(bsxfun(@times, neighbourhood.color_unnormed, relative_weights),2)./ ...
                                                         sum(relative_weights); 
