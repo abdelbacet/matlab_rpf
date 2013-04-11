@@ -19,7 +19,7 @@ boxsizes=[55 35 17 7];
 max_samples_factor = [0.02, 0.04, 0.2, 0.5]; % for prototyping, jl
 
 %% Specify debug window
-inspected_pixel = [173; 337];
+inspected_pixel = [125; 314];
 window_min = inspected_pixel - 60;
 %window_min = inspected_pixel;
 window_max = inspected_pixel + 60;
