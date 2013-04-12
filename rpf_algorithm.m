@@ -24,9 +24,10 @@ max_samples_factor = [0.02, 0.04, 0.3, 0.5]; % for prototyping, jl
 
 %% Specify debug window
 inspected_pixel = [125; 314];
-window_min = inspected_pixel - 60;
+window_size = 100;
+window_min = max(inspected_pixel - window_size, [0;0]);
 %window_min = inspected_pixel;
-window_max = inspected_pixel + 60;
+window_max = min(inspected_pixel + window_size, [361; 619]);
 idx_min = getIndexByPosition(window_min, 1, img_width);
 idx_max = getIndexByPosition(window_max, 1, img_width);
 idx_inspected_pixel = getIndexByPosition(inspected_pixel, 1, img_width);
