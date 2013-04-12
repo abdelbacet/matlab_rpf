@@ -65,6 +65,8 @@ function new_colors_pixel = filter_color_samples(neighbourhood, a, b, weights_co
     new_colors_mean_before = mean(new_colors_pixel, 2);
     new_colors_std = std(new_colors_pixel, 0, 2); 
     new_colors_error = abs(bsxfun(@minus, new_colors_pixel, new_colors_mean_before));
+    % only treat up spikes:
+    % new_colors_error = abs(bsxfun(@minus, new_colors_pixel, new_colors_mean_before));
     
     % could introduce larger error margin like 2*std
     outliers = any(bsxfun(@gt, new_colors_error, new_colors_std), 1);
