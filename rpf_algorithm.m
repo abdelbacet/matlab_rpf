@@ -24,7 +24,7 @@ max_samples_factor = [0.02, 0.04, 0.3, 0.5]; % for prototyping, jl
 
 %% Specify debug window
 inspected_pixel = [125; 314];
-window_size = 100;
+window_size = 60;
 window_min = max(inspected_pixel - window_size, [0;0]);
 %window_min = inspected_pixel;
 window_max = min(inspected_pixel + window_size, [361; 619]);
@@ -45,14 +45,14 @@ for iter_step = 1:4
     new_colors = zeros(length(bin_import)/8, 3, 8);
     % This is designed to run parallel!
    
-    parfor i = idx_min:idx_max 
+    for i = idx_min:idx_max 
         all_samples_pixel = (i-1)*8+(1:8);
         pixel_x = bin_import(1, all_samples_pixel(1));
         if ( pixel_x > window_max(1) || pixel_x < window_min(1))
             continue;
         end
         neighbourhood = preprocess_samples(bin_import, all_samples_pixel, boxsize, max_samples_box, spp);
-        [a, b, weights_col_rand] = compute_feature_weights_jleth(iter_step, neighbourhood);
+        [a, b, W_r_c] = compute_feature_weights_jleth(iter_step, neighbourhood);
         debug_pixel = false;
         if (i == idx_inspected_pixel)
             fprintf('pos: \n');
@@ -62,10 +62,10 @@ for iter_step = 1:4
             fprintf('beta: \n');
             disp(b);
             fprintf('W_r_c: \n');
-            disp(weights_col_rand);
+            disp(W_r_c);
             debug_pixel = true;
         end
-        new_colors(i,:,:) = filter_color_samples(neighbourhood, a, b, weights_col_rand, spp, debug_pixel, iter_step);
+        new_colors(i,:,:) = filter_color_samples(neighbourhood, a, b, W_r_c, spp, debug_pixel, iter_step);
     end
     
     % write new_colors back into bin_import 

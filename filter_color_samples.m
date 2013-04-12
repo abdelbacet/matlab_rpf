@@ -1,5 +1,5 @@
-function new_colors_pixel = filter_color_samples(neighbourhood, a, b, weights_col_rand, spp, debug_pixel, iter_step)
-    sum_weights_col_rand = weights_col_rand;
+function new_colors_pixel = filter_color_samples(neighbourhood, a, b, W_r_c, spp, debug_pixel, iter_step)
+    sum_weights_col_rand = W_r_c;
     
     init_variance = 0.02; % indoor
     % init_variance = 0.002 % other

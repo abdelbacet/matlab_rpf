@@ -71,6 +71,7 @@ function [a, b, W_r_c] = compute_feature_weights_jleth(iter_step, N)
 %     disp(a)
     
     %% Compute beta by summing up over results
+    % could be written matlab style
     b = zeros([size(N.features, 1), 1]);
     for k = 1:size(N.features, 1)
         D_fk_r = sum(m_D_fk_rl(k, :)); % kth feature vs random
