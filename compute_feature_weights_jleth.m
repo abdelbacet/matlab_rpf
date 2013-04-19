@@ -1,4 +1,4 @@
-function [a, b, W_r_c] = compute_feature_weights_jleth(iter_step, N)
+function [a, b, W_r_c] = compute_feature_weights_jleth(iter_step, N, debug_pixel)
 %Jleth's approach to compute feature weights
 %   Weights are not computed per color channel, but overall. This
 %   is supposed to reduce decoloring of the image.
@@ -62,13 +62,7 @@ function [a, b, W_r_c] = compute_feature_weights_jleth(iter_step, N)
     a = max(1 - ( 1 + 0.1*t)*W_r_c, 0);
     % in paper:
     % a = 1 - W_r_c;
-    
-    %% For comparing with jleth:
-%     disp(D_r_c/D_a_c)
-%     disp(D_p_c/D_a_c)
-%     disp(D_f_c/D_a_c)
-%     disp(W_r_c)
-%     disp(a)
+
     
     %% Compute beta by summing up over results
     % could be written matlab style
@@ -84,6 +78,18 @@ function [a, b, W_r_c] = compute_feature_weights_jleth(iter_step, N)
         b(k) = W_fk_c * max(1 - (1 + 0.1*t)*W_fk_r, 0);
         % in paper:
         % b(k) = W_fk_c * (1 - W_fk_r);
+    end
+    
+        %% For comparing with jleth:
+    if (debug_pixel)
+        fprintf('pos = (%d, %d) \n', N.pos_unnormed(1,1), N.pos_unnormed(2,1));
+        fprintf('D_r_c = %.2f (%.2f, %.2f, %.2f) \n', D_r_c/D_a_c*100, m_D_rk_c./D_a_c*100);
+        fprintf('D_p_c = %.2f (%.2f, %.2f) \n', D_p_c/D_a_c*100, m_D_pk_c./D_a_c*100);
+        fprintf('D_f_c = %.2f (%.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f) \n', D_f_c/D_a_c*100, m_D_fk_c./D_a_c*100);
+        
+        fprintf('alpha = %f \n', a);
+        fprintf('beta = %f \n', b);
+        fprintf('W_r_c = %f \n', W_r_c);        
     end
 end
 

@@ -16,7 +16,7 @@ load('validated_bin_import.mat', 'spp')
 
 %progress = waitbar(0, 'zomfg..');
 %initializes random generator
-rng(42);
+%rng(42);
 tic
 boxsizes=[55 35 17 7];
 %max_samples_factor = [0.5 0.5 0.5 0.5]; % Sen
@@ -26,7 +26,7 @@ max_samples_factor = [0.02, 0.04, 0.3, 0.5]; % for prototyping, jl
 inspected_pixel = [125; 314];
 window_size = 60;
 window_min = max(inspected_pixel - window_size, [0;0]);
-%window_min = inspected_pixel;
+window_min = inspected_pixel;
 window_max = min(inspected_pixel + window_size, [361; 619]);
 idx_min = getIndexByPosition(window_min, 1, img_width);
 idx_max = getIndexByPosition(window_max, 1, img_width);
@@ -52,19 +52,11 @@ for iter_step = 1:4
             continue;
         end
         neighbourhood = preprocess_samples(bin_import, all_samples_pixel, boxsize, max_samples_box, spp);
-        [a, b, W_r_c] = compute_feature_weights_jleth(iter_step, neighbourhood);
         debug_pixel = false;
         if (i == idx_inspected_pixel)
-            fprintf('pos: \n');
-            disp(bin_import(1:2, all_samples_pixel(1))');
-            fprintf('alpha: \n');
-            disp(a);
-            fprintf('beta: \n');
-            disp(b);
-            fprintf('W_r_c: \n');
-            disp(W_r_c);
             debug_pixel = true;
         end
+        [a, b, W_r_c] = compute_feature_weights_jleth(iter_step, neighbourhood, debug_pixel);
         new_colors(i,:,:) = filter_color_samples(neighbourhood, a, b, W_r_c, spp, debug_pixel, iter_step);
     end
     
