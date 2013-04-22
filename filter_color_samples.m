@@ -13,7 +13,7 @@ function new_colors_pixel = filter_color_samples(neighbourhood, a, b, W_r_c, spp
     scale_f = -(1-sum_weights_col_rand)^2/(2*variance_feature);
         
     new_colors_pixel = zeros(3,spp);
-    %current_pixel = makeStruct(bin_import, all_samples_pixel);
+
     debug_weights = zeros(1, length(neighbourhood.color));
     %% This assumes, that the first 8 samples of the neighbourhood are the samples of the current pixel
     for i=1:spp

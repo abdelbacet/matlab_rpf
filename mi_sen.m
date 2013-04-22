@@ -10,8 +10,8 @@ function [ mi ] = mi_sen( a, b )
     a_shift = (a+2)/4;  % [-2, 2] -> [0, 1]
     b_shift = (b+2)/4; 
 
-    a_buckets = floor(nr_buckets*a_shift + 0.5);
-    b_buckets = floor(nr_buckets*b_shift + 0.5);
+    a_buckets = floor((nr_buckets - 1)*a_shift + 0.5);
+    b_buckets = floor((nr_buckets - 1)*b_shift + 0.5);
 
     a_buckets = min(nr_buckets - 1, max(a_buckets, 0));
     b_buckets = min(nr_buckets - 1, max(b_buckets, 0));
@@ -25,15 +25,15 @@ function [ mi ] = mi_sen( a, b )
     %% entropies
     probabilities_a = hist_a/nr_samples;
     probabilities_a(probabilities_a == 0) = []; % needed?
-    entropy_a = sum(-probabilities_a/log2(probabilities_a));
+    entropy_a = sum(-probabilities_a.*log(probabilities_a))/log(2);
 
     probabilities_b = hist_b/nr_samples;
     probabilities_b(probabilities_b == 0) = []; % needed?
-    entropy_b = -sum(probabilities_b/log2(probabilities_b));
+    entropy_b = -sum(probabilities_b.*log(probabilities_b))/log(2);
 
     probabilities_ab = hist_ab/nr_samples;
     probabilities_ab(probabilities_ab == 0) = []; % needed?
-    entropy_ab = -sum(probabilities_ab/log2(probabilities_ab));
+    entropy_ab = -sum(probabilities_ab.*log(probabilities_ab))/log(2);
 
     %% mi (finally!)
     mi = (entropy_a + entropy_b - entropy_ab);
