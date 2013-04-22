@@ -13,9 +13,7 @@ function [neighbourhood, N] = preprocess_samples(bin_import, k, boxsize, max_sam
     idx_features = [13:24, 28:30];
     means        = sum(bin_import(idx_features, k), 2) / spp;
     st_deviation = std(bin_import(idx_features, k), 0, 2);
-    % todo: weight std here as follows: 
-    % world-position x 30
-    % everything else x 3
+
     adapted_std = [ 3*st_deviation(1:6) 
                     30*st_deviation(7:12) 
                     3*st_deviation(13:15)];
