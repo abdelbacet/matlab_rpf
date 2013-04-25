@@ -25,15 +25,15 @@ function [ mi ] = mi_sen( a, b )
     %% entropies
     probabilities_a = hist_a/nr_samples;
     probabilities_a(probabilities_a == 0) = []; % needed?
-    entropy_a = sum(-probabilities_a/log2(probabilities_a));
+    entropy_a = sum(-probabilities_a.*log(probabilities_a))/log(2);
 
     probabilities_b = hist_b/nr_samples;
     probabilities_b(probabilities_b == 0) = []; % needed?
-    entropy_b = -sum(probabilities_b/log2(probabilities_b));
+    entropy_b = -sum(probabilities_b.*log(probabilities_b))/log(2);
 
     probabilities_ab = hist_ab/nr_samples;
     probabilities_ab(probabilities_ab == 0) = []; % needed?
-    entropy_ab = -sum(probabilities_ab/log2(probabilities_ab));
+    entropy_ab = -sum(probabilities_ab.*log(probabilities_ab))/log(2);
 
     %% mi (finally!)
     mi = (entropy_a + entropy_b - entropy_ab);
