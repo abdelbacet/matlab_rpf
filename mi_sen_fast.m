@@ -9,8 +9,8 @@ function [ mi ] = mi_sen_fast( a, b )
     a_shift = (a+2)/4;  % [-2, 2] -> [0, 1]
     b_shift = (b+2)/4; 
 
-    a_buckets = floor(nr_buckets*a_shift + 0.5);
-    b_buckets = floor(nr_buckets*b_shift + 0.5);
+    a_buckets = floor((nr_buckets - 1)*a_shift + 0.5);
+    b_buckets = floor((nr_buckets - 1)*b_shift + 0.5);
 
     a_buckets = min(nr_buckets - 1, max(a_buckets, 0));
     b_buckets = min(nr_buckets - 1, max(b_buckets, 0));

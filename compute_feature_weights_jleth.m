@@ -11,17 +11,17 @@ function [a, b, W_r_c] = compute_feature_weights_jleth(iter_step, N, debug_pixel
         channel_info = N.color(channel,:);
         for k = 1:size(N.random_pars, 1)
             rk = N.random_pars(k, :);
-            m_D_rk_c(k) = m_D_rk_c(k) + mutualinfo(channel_info, rk);
+            m_D_rk_c(k) = m_D_rk_c(k) + mi_sen_fast(channel_info, rk);
         end
         
         for k = 1:size(N.pos, 1)
             pk = N.pos(k, :);
-            m_D_pk_c(k) = m_D_pk_c(k) + mutualinfo(channel_info, pk);
+            m_D_pk_c(k) = m_D_pk_c(k) + mi_sen_fast(channel_info, pk);
         end
         
         for k = 1:size(N.features, 1)
             fk = N.features(k, :);
-            m_D_fk_c(k) = m_D_fk_c(k) + mutualinfo(channel_info, fk);
+            m_D_fk_c(k) = m_D_fk_c(k) + mi_sen_fast(channel_info, fk);
         end
     end
     
@@ -33,12 +33,12 @@ function [a, b, W_r_c] = compute_feature_weights_jleth(iter_step, N, debug_pixel
         feature_info = N.features(k,:);
         for l = 1:size(N.random_pars, 1)
             rl = N.random_pars(l, :);
-            m_D_fk_rl(k, l) = mutualinfo(feature_info, rl);
+            m_D_fk_rl(k, l) = mi_sen_fast(feature_info, rl);
         end
         
         for l = 1:size(N.pos, 1)
             pl = N.pos(l, :);
-            m_D_fk_pl(k, l) = mutualinfo(feature_info, pl);
+            m_D_fk_pl(k, l) = mi_sen_fast(feature_info, pl);
         end
         
         for l = 1:size(N.color, 1)
@@ -61,11 +61,12 @@ function [a, b, W_r_c] = compute_feature_weights_jleth(iter_step, N, debug_pixel
     % alpha of tech report
     a = max(1 - ( 1 + 0.1*t)*W_r_c, 0);
     % in paper:
-    % a = 1 - W_r_c;
+    %a = 1 - W_r_c;
 
     
     %% Compute beta by summing up over results
     % could be written matlab style
+        
     b = zeros([size(N.features, 1), 1]);
     for k = 1:size(N.features, 1)
         D_fk_r = sum(m_D_fk_rl(k, :)); % kth feature vs random
@@ -77,7 +78,7 @@ function [a, b, W_r_c] = compute_feature_weights_jleth(iter_step, N, debug_pixel
         % Tech report:
         b(k) = W_fk_c * max(1 - (1 + 0.1*t)*W_fk_r, 0);
         % in paper:
-        % b(k) = W_fk_c * (1 - W_fk_r);
+        %b(k) = W_fk_c * (1 - W_fk_r);
     end
     
         %% For comparing with jleth:
@@ -86,10 +87,15 @@ function [a, b, W_r_c] = compute_feature_weights_jleth(iter_step, N, debug_pixel
         fprintf('D_r_c = %.2f (%.2f, %.2f, %.2f) \n', D_r_c/D_a_c*100, m_D_rk_c./D_a_c*100);
         fprintf('D_p_c = %.2f (%.2f, %.2f) \n', D_p_c/D_a_c*100, m_D_pk_c./D_a_c*100);
         fprintf('D_f_c = %.2f (%.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f) \n', D_f_c/D_a_c*100, m_D_fk_c./D_a_c*100);
-        
+        fprintf('W_r_c = %f \n', W_r_c);
+         
         fprintf('alpha = %f \n', a);
         fprintf('beta = %f \n', b);
-        fprintf('W_r_c = %f \n', W_r_c);        
+ 
+        
+        fprintf('MI Color position = %.4f \n', D_p_c);
+        fprintf('MI Color random = %.4f \n', D_r_c);
+        fprintf('MI Color features = %.4f \n', sum(sum(m_D_fk_cl)));
     end
 end
 

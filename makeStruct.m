@@ -3,15 +3,18 @@ function out = makeStruct(bin_import, N)
 %   Necessery information may be subject to change. For now it's
 %   colors, positions, features (various) and random params (lens coordinate).
 %   The given struct is also NORMALIZED
-% 13:15, 19:21, 16:18, 22:24, 28:30
-% features order: n1, albedo, pos1, pos2, n2
     out = struct(   'color', bin_import(7:9, N), ...
                     'pos', bin_import(1:2, N), ...
-                    'features', [   bin_import(13:24, N); ...
-                                	bin_import(28:30, N)], ...
-                    'random_pars', [bin_import(4:5, N)  %; ... lens pos
-                                   normc(bin_import(22:24, N) - bin_import(19:21, N))]); % first reflection dir
-                                 % TODO: precompute reflection dir once
+                    'features', [   bin_import(19:21, N); % pos1
+                                    bin_import(22:24, N); % pos2
+                                	bin_import(13:15, N); % n1
+                                    bin_import(28:30, N); % n2
+                                    bin_import(16:18, N);], ... %albedo
+                    'random_pars', normc(bin_import(22:24, N) - bin_import(19:21, N))); % first reflection dir
+                                   % jleth uses first reflection direction 
+                                   % bin_import(4:5, N) ); %; ... lens pos
+                                   
+                                    % TODO: precompute reflection dir once
     
     %% Print neighbourhood positions for debugging purposes
 %     neighb_mat_pos = bsxfun(@minus, floor(out.pos), floor(out.pos(:, 1)) - [27; 27]);

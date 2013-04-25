@@ -13,17 +13,17 @@ function [neighbourhood, N] = preprocess_samples(bin_import, k, boxsize, max_sam
     idx_features = [13:24, 28:30];
     means        = sum(bin_import(idx_features, k), 2) / spp;
     st_deviation = std(bin_import(idx_features, k), 0, 2);
-    % todo: weight std here as follows: 
-    % world-position x 30
-    % everything else x 3
+
     adapted_std = [ 3*st_deviation(1:6) 
                     30*st_deviation(7:12) 
                     3*st_deviation(13:15)];
     mu = repmat(mean_position, [1, max_samples_box - spp]);
     sample_pos_array = round(normrnd(mu, standard_deviation));
-    % todo: rework first if into various bsxfun/logical operators:
-    min_boarder = max(mean_position - boxsize, [0;0]);
-    max_boarder = min(mean_position + boxsize, [362; 620]);
+    
+    % min_boarder is now half of boxsize, this doesn't make too much
+    % sense to crop it there, imho...
+    min_boarder = max(mean_position - boxsize/2, [0;0]);
+    max_boarder = min(mean_position + boxsize/2, [362; 620]);
     
     inside_img_and_box = all(bsxfun(@ge, sample_pos_array, min_boarder) & ...
                      bsxfun(@lt, sample_pos_array, max_boarder), 1);
