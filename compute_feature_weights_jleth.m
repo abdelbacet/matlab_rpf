@@ -81,21 +81,21 @@ function [a, b, W_r_c] = compute_feature_weights_jleth(iter_step, N, debug_pixel
         %b(k) = W_fk_c * (1 - W_fk_r);
     end
     
-        %% For comparing with jleth:
-    if (debug_pixel)
-        fprintf('pos = (%d, %d) \n', N.pos_unnormed(1,1), N.pos_unnormed(2,1));
-        fprintf('D_r_c = %.2f (%.2f, %.2f, %.2f) \n', D_r_c/D_a_c*100, m_D_rk_c./D_a_c*100);
-        fprintf('D_p_c = %.2f (%.2f, %.2f) \n', D_p_c/D_a_c*100, m_D_pk_c./D_a_c*100);
-        fprintf('D_f_c = %.2f (%.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f) \n', D_f_c/D_a_c*100, m_D_fk_c./D_a_c*100);
-        fprintf('W_r_c = %f \n', W_r_c);
-         
-        fprintf('alpha = %f \n', a);
-        fprintf('beta = %f \n', b);
- 
-        
-        fprintf('MI Color position = %.4f \n', D_p_c);
-        fprintf('MI Color random = %.4f \n', D_r_c);
-        fprintf('MI Color features = %.4f \n', sum(sum(m_D_fk_cl)));
-    end
+    %% For comparing with jleth:
+%     if (debug_pixel)
+%         fprintf('pos = (%d, %d) \n', N.pos_unnormed(1,1), N.pos_unnormed(2,1));
+%         fprintf('D_r_c = %.2f (%.2f, %.2f, %.2f) \n', D_r_c/D_a_c*100, m_D_rk_c./D_a_c*100);
+%         fprintf('D_p_c = %.2f (%.2f, %.2f) \n', D_p_c/D_a_c*100, m_D_pk_c./D_a_c*100);
+%         fprintf('D_f_c = %.2f (%.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f) \n', D_f_c/D_a_c*100, m_D_fk_c./D_a_c*100);
+%         fprintf('W_r_c = %f \n', W_r_c);
+%          
+%         fprintf('alpha = %f \n', a);
+%         fprintf('beta = %f \n', b);
+%  
+%         
+%         fprintf('MI Color position = %.4f \n', D_p_c);
+%         fprintf('MI Color random = %.4f \n', D_r_c);
+%         fprintf('MI Color features = %.4f \n', sum(sum(m_D_fk_cl)));
+%     end
 end
 

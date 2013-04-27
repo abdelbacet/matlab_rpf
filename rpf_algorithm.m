@@ -24,7 +24,7 @@ max_samples_factor = [0.02, 0.04, 0.3, 0.5]; % for prototyping, jl
 
 %% Specify debug window
 inspected_pixel = [125; 314];
-window_size = 30;
+window_size = 80;
 window_min = max(inspected_pixel - window_size, [0;0]);
 %window_min = inspected_pixel;
 window_max = min(inspected_pixel + window_size, [361; 619]);
@@ -39,8 +39,8 @@ initial_energy = sum(sum(bsxfun(@times, bin_import(7:9, :), [.3; .59; .11;])));
 
 % Setting output color to initial values
 % TODO: check if this works with reshape to input_colors below
-input_colors = bin_import(7:9);
-output_colors = zeros(1, 3, 8);
+input_colors = bin_import(7:9, :);
+output_colors = zeros(nr_pixels, 3, 8);
 
 %% RPF algorithm itself
 for iter_step = 1:4
@@ -53,7 +53,7 @@ for iter_step = 1:4
         input_colors = reshape(permute(output_colors, [2 3 1]), 3, []);
     end
     
-    print_img(input_colors, bin_import(16:18), ...
+    print_img(input_colors, bin_import(16:18, :), ...
             ['before_iter_' num2str(iter_step) '_' version '_npc_jlet_factor_own_mi'], spp);
     
     % iterate over every pixel
@@ -66,9 +66,9 @@ for iter_step = 1:4
         end
         neighbourhood = preprocess_samples(bin_import, all_samples_pixel, boxsize, max_samples_box, spp, input_colors);
         debug_pixel = false;
-        if (i == idx_inspected_pixel)
-            debug_pixel = true;
-        end
+%         if (i == idx_inspected_pixel)
+%             debug_pixel = true;
+%         end
         [a, b, W_r_c] = compute_feature_weights_jleth(iter_step, neighbourhood, debug_pixel);
         output_colors(i,:,:) = filter_color_samples(neighbourhood, a, b, W_r_c, spp, debug_pixel, iter_step);
     end
@@ -80,8 +80,8 @@ final_energy = sum(sum(bsxfun(@times, bin_import(7:9, :), [.3; .59; .11;])));
 fprintf('Lost %d percent energy \n', 100*(1 - final_energy/initial_energy));
 
 final_colors = reshape(permute(output_colors, [2 3 1]), 3, []);
-print_img(final_colors, bin_import(16:18), ...
-            ['before_iter_' num2str(iter_step) '_' version '_npc_jlet_factor_own_mi'], spp);
+print_img(final_colors, bin_import(16:18,:), ...
+            ['final_npc_jlet_factor_own_mi'], spp);
 
 
 toc
