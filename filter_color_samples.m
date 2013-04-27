@@ -26,20 +26,19 @@ function output_colors_pixel = filter_color_samples(neighbourhood, a, b, W_r_c, 
         weighted_error_features = bsxfun(@times, squarred_error_features, b);
         sum_wef = sum(weighted_error_features, 1);
         
-        % seems like the problem are very high values of sum_wec after the 
-        % first pass.... does somewhere go something wrong during the first
-        % pass?
         relative_weights = exp(scale_c*sum_wec + scale_f*sum_wef);
-        if (debug_pixel)
-            debug_weights = debug_weights + relative_weights;
-            if (i == 1)
-                fprintf('sum wec: \n')
-                disp(sum_wec(1:14));
-                fprintf('weighted error features: \n')
-                disp(sum_wef(1:14));
-                fprintf('resulting relative weights: \n')
-            end
-        end
+        
+        % printing weights of first 14 samples in neighbourhood
+%        if (debug_pixel)
+%            debug_weights = debug_weights + relative_weights;
+%            if (i == 1)
+%                fprintf('sum wec: \n')
+%                disp(sum_wec(1:14));
+%                fprintf('weighted error features: \n')
+%                disp(sum_wef(1:14));
+%                fprintf('resulting relative weights: \n')
+%            end
+%        end
         output_colors_pixel(:,i) = sum(bsxfun(@times, neighbourhood.input_colors, relative_weights),2)./ ...
                                                         sum(relative_weights); 
     end
@@ -76,10 +75,11 @@ function output_colors_pixel = filter_color_samples(neighbourhood, a, b, W_r_c, 
     lost_energy_per_sample = new_colors_mean_before - mean(output_colors_pixel, 2);
     output_colors_pixel = bsxfun(@plus, output_colors_pixel, lost_energy_per_sample);
     
-    if (debug_pixel)
-        fprintf('color before: \n')
-        disp(neighbourhood.color_unnormed(:, 1:8))
-        fprintf('color after: \n')
-        disp(output_colors_pixel)
-    end
+    % printing colors before and after for debugging
+%    if (debug_pixel)
+%        fprintf('color before: \n')
+%        disp(neighbourhood.color_input(:, 1:8))
+%        fprintf('color after: \n')
+%        disp(output_colors_pixel)
+%    end
 end
