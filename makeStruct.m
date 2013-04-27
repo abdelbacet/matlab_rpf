@@ -1,4 +1,4 @@
-function out = makeStruct(bin_import, N)
+function out = makeStruct(bin_import, N, input_colors)
 %MAKESTRUCT Constructs a struct with all necessary information
 %   Necessery information may be subject to change. For now it's
 %   colors, positions, features (various) and random params (lens coordinate).
@@ -35,7 +35,7 @@ function out = makeStruct(bin_import, N)
         divided_by_std = bsxfun(@rdivide, removed_mean, std(removed_mean, 0, 2) + 1e-10);
         out.(f_name) = divided_by_std;
     end
-    out.color_unnormed = bin_import(7:9, N);
+    out.input_colors = input_colors(:, N);
     %% for debugging only
     out.pos_unnormed = floor(bin_import(1:2, N));
 end

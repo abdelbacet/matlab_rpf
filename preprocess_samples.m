@@ -1,4 +1,4 @@
-function [neighbourhood, N] = preprocess_samples(bin_import, k, boxsize, max_samples_box, spp)
+function [neighbourhood, N] = preprocess_samples(bin_import, k, boxsize, max_samples_box, spp, input_colors)
     %img_width = 362;
     mean_position = [floor(bin_import(1,k(1))), floor(bin_import(2,k(1)))]';
     standard_deviation = boxsize/4;
@@ -46,5 +46,5 @@ function [neighbourhood, N] = preprocess_samples(bin_import, k, boxsize, max_sam
     % add all samples of current pixel and valid ones to neighbourhood
     N = [k, valid_sample_idxs(chosen_samples)];
     %Neighbourhood ready for statistical analysis    
-    neighbourhood = makeStruct(bin_import, N);
+    neighbourhood = makeStruct(bin_import, N, input_colors);
 end
