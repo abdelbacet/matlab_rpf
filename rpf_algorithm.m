@@ -76,10 +76,11 @@ for iter_step = 1:4
     fprintf('finished iteration step %d ! \n', iter_step);
 end
 
-final_energy = sum(sum(bsxfun(@times, bin_import(7:9, :), [.3; .59; .11;])));
-fprintf('Lost %d percent energy \n', 100*(1 - final_energy/initial_energy));
-
 final_colors = reshape(permute(output_colors, [2 3 1]), 3, []);
+
+final_energy = sum(sum(bsxfun(@times, final_colors, [.3; .59; .11;])));
+fprintf('Lost %.2f percent energy \n', 100*(1 - final_energy/initial_energy));
+
 print_img(final_colors, bin_import(16:18,:), ...
             ['final_npc_jlet_factor_own_mi'], spp);
 

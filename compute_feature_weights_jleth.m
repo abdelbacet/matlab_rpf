@@ -11,17 +11,17 @@ function [a, b, W_r_c] = compute_feature_weights_jleth(iter_step, N, debug_pixel
         channel_info = N.color(channel,:);
         for k = 1:size(N.random_pars, 1)
             rk = N.random_pars(k, :);
-            m_D_rk_c(k) = m_D_rk_c(k) + mi_sen_fast(channel_info, rk);
+            m_D_rk_c(k) = m_D_rk_c(k) + mutualinfo(channel_info, rk);
         end
         
         for k = 1:size(N.pos, 1)
             pk = N.pos(k, :);
-            m_D_pk_c(k) = m_D_pk_c(k) + mi_sen_fast(channel_info, pk);
+            m_D_pk_c(k) = m_D_pk_c(k) + mutualinfo(channel_info, pk);
         end
         
         for k = 1:size(N.features, 1)
             fk = N.features(k, :);
-            m_D_fk_c(k) = m_D_fk_c(k) + mi_sen_fast(channel_info, fk);
+            m_D_fk_c(k) = m_D_fk_c(k) + mutualinfo(channel_info, fk);
         end
     end
     
@@ -33,12 +33,12 @@ function [a, b, W_r_c] = compute_feature_weights_jleth(iter_step, N, debug_pixel
         feature_info = N.features(k,:);
         for l = 1:size(N.random_pars, 1)
             rl = N.random_pars(l, :);
-            m_D_fk_rl(k, l) = mi_sen_fast(feature_info, rl);
+            m_D_fk_rl(k, l) = mutualinfo(feature_info, rl);
         end
         
         for l = 1:size(N.pos, 1)
             pl = N.pos(l, :);
-            m_D_fk_pl(k, l) = mi_sen_fast(feature_info, pl);
+            m_D_fk_pl(k, l) = mutualinfo(feature_info, pl);
         end
         
         for l = 1:size(N.color, 1)
